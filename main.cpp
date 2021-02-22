@@ -246,21 +246,46 @@ void stackingBaskets(int n, char in, char out) {
 
 /*
  * 习题 2.4、【题目】Repeater
- *
+ * 以图构图。
+ * 第一行包含一个正整数N，代表模板的大小为N * N（N只能是3、4或5）。
+ * 接下来的N行描述了模板。
+ * 下一行包含一个正整数Q，它是图片的比例级别。
+ * 输入以N = 0结束。
+ * 保证一张图片的大小不会超过3000 * 3000。
  */
+
 
 /*
  * 习题 2.5、【题目】Hello World for U
- *
  */
 
 
 //******************************* 日期 *********************************
 
 /*
- * 例题 2.6、【题目】
- *
+ * 例题 2.6、【题目】今年的第几天？
+ * 输入年、月、日，计算该天是本年的第几天。
  */
+void calcDayOfYear(int year,int month,int day){
+    //c99
+    int monthDays[13]={
+            [1]=31,[3]=31,[5]=31,[7]=31,[8]=31,[10]=31,[12]=31,
+            [4]=30,[6]=30,[9]=30,[11]=30,
+            [2]=28
+    };
+
+    if ((year%4==0 && year%100!=0) || year%400==0){
+        monthDays[2]+=1;
+    }
+
+    int sum=0;
+    for (int i = 1; i <month ; ++i) {
+        sum+=monthDays[i];
+    }
+    sum+=day;
+
+    printf("%d\n",sum);
+}
 
 /*
  * 例题 2.7、【题目】
@@ -284,7 +309,9 @@ int main() {
     //trapezoidPrint(4);
     //stackingBaskets(1,'B','A');
     //stackingBaskets(5,'B','A');
-    stackingBaskets(11,'$','*');
+    //stackingBaskets(11,'$','*');
+    //calcDayOfYear(1990,9,20);
+    //calcDayOfYear(2000,5,1);
 
 
 
