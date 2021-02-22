@@ -20,6 +20,9 @@
  * 求满足条件的所有a, b, c的值。
  * 提示：代数化简 abc+bcc = a*100+b*10+c + b*100+c*10+c = a*100+b*110+c*12 = 532
  */
+/**
+ * 求解a,b,c：设a,b,c均是0到9之间的数字，abc, bcc是两个三位数，且有abc + bcc = 532
+ */
 void findABC() {
     for (int i = 0; i <= 9; ++i) {
         for (int j = 0; j <= 9; ++j) {
@@ -51,6 +54,9 @@ int reverseNumber(int x) {
     return temp;
 }
 
+/**
+ * 求解4位数N，它的9倍恰好是其反序数
+ */
 void inverseNumber() {
     for (int i = 1000; i <= 1111; ++i) {
         if (i * 9 == reverseNumber(i)) {
@@ -80,6 +86,9 @@ bool isPalindrome(int x) {
     return x == temp || x == temp / 10; //比较前一半与后一半对称值是否相等
 }
 
+/**
+ * 打印所有不超过256的对称平方数
+ */
 void symmetricSquare() {
 
     for (int i = 0; i <= 256; ++i) {
@@ -96,6 +105,10 @@ void symmetricSquare() {
  * 习题 2.1、【题目】与7无关的数
  * 一个正整数，如果它能被7整除，或者它的十进制表示法中某个位数上的数字为7,那么称其为与7相关的数。
  * 现求所有小于等于n (n< 100)的与7无关的正整数的平方和。
+ */
+/**
+ * 查找与7无关的数
+ * @param n 范围上限
  */
 void findIrrelevantSeven(int n) {
     if (n <= 0 || n >= 100) {
@@ -114,6 +127,10 @@ void findIrrelevantSeven(int n) {
  * 习题 2.2、【题目】百鸡问题
  * 用小于等于n元去买100只鸡，大鸡5元/只，小鸡3元/只，还有1/3 元每只的一种小鸡，分别记为x只、y只和z只。
  * 编程求解x, y,z所有可能的解。
+ */
+/**
+ * 百鸡问题
+ * @param n 上限钱数
  */
 void calcChicken(int n) {
     for (int i = 0; i <= 100 && i <= n / 5; ++i) {
@@ -136,6 +153,13 @@ void calcChicken(int n) {
  * 如果有多个价格符合题意，那么输出最昂贵的那个。
  * 如果没有价格符合题意，那么输出0。
  * 提示：首位非零，求最贵的需要从大到小枚举；总价格=i * 10000 + x * 1000 + y * 100 + z * 10 + j
+ */
+/**
+ * 推测火鸡价总价，并计算单价
+ * @param n 火鸡个数
+ * @param x 千位数字
+ * @param y 百位数字
+ * @param z 十位数字
  */
 void guessBillPrice(int n, int x, int y, int z) {
     int flag = true;
@@ -163,6 +187,10 @@ void guessBillPrice(int n, int x, int y, int z) {
 /*
  * 例题 2.4、【题目】输出梯形
  * 输入一个高度h(1<=h<=1000),输出一个高度为h、上底边长度为h的梯形。
+ */
+/**
+ * 输出梯形
+ * @param h 上底和高长度
  */
 void trapezoidPrint(int h) {
     for (int i = 1; i <= h; ++i) {
@@ -267,6 +295,12 @@ void stackingBaskets(int n, char in, char out) {
  * 例题 2.6、【题目】今年的第几天？
  * 输入年、月、日，计算该天是本年的第几天。
  */
+/**
+ * 计算该天是本年的第几天
+ * @param year 年份
+ * @param month 月份
+ * @param day 日
+ */
 void calcDaysOfYear(int year, int month, int day) {
     //c99
     int monthDays[13] = { //每月天数
@@ -291,6 +325,11 @@ void calcDaysOfYear(int year, int month, int day) {
 /*
  * 例题 2.7、【题目】打印日期
  * 给出年份和此年中的第几天，算出这天是几月几号。
+ */
+/**
+ * 给出年份和此年中的第几天，算出这天是几月几号
+ * @param year 年份
+ * @param n 第几天
  */
 void calcDateOfYear(int year, int n) {
     //c99
@@ -321,6 +360,13 @@ void calcDateOfYear(int year, int n) {
  * 计算一个日期加上若干天后的日期。
  * 注意：考虑跨年！！！
  */
+/**
+ * 计算一个日期加上若干天后的日期
+ * @param year 年份
+ * @param month 月份
+ * @param day 日
+ * @param interval 间隔天数
+ */
 void calcDateAfterDate(int year, int month, int day, int interval) {
     //c99
     int monthDays[13] = { //每月天数
@@ -346,6 +392,24 @@ void calcDateAfterDate(int year, int month, int day, int interval) {
     //考虑跨年
     calcDateAfterDate(year + 1, 1, 1, interval - (sum - day) - 1);
 }
+
+/*
+ * 习题 2.6、【题目】日期差值
+ * 有两个日期，求两个日期之间的天数，如果两个日期是连续的，则规定它们之间的天数为两天。
+ */
+
+
+/*
+ * 习题 2.7、【题目】Day of Week
+ * 编写一个程序，计算给定的日期是周几。
+ */
+
+
+/*
+ * 习题 2.8、【题目】日期类
+ * 编写一个日期类，要求按xxxx-xx-xx的格式输出日期，实现加一天的操作。
+ */
+
 
 
 int main() {
