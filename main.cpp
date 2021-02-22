@@ -204,27 +204,28 @@ void stackingBasketsRecursion(const char str[], int n, int i, char in, char out)
                 temp[j] = out;
             }
         } else {                            //可能不需要翻转的区间
-            if (str[j]==' '){               //空字符翻转为外筐字符（首尾行去角后产生）
+            if (str[j] == ' ') {               //空字符翻转为外筐字符（首尾行去角后产生）
                 temp[j] = out;
-            } else{                         //其他字符直接复制
+            } else {                         //其他字符直接复制
                 temp[j] = str[j];
             }
         }
     }
 
-    if (i==0 && n>1){  //多行的首尾行去角
+    if (i == 0 && n > 1) {  //多行的首尾行去角
         temp[0] = temp[n - 1] = ' ';
     }
 
     //上下对称输出
     puts(temp);
-    if (i==n/2) {   //到达中间，结束递归深入
+    if (i == n / 2) {   //到达中间，结束递归深入
         return;
     } else {        //未到达中间，继续深入递归
         stackingBasketsRecursion(temp, n, i + 1, in, out);
         puts(temp);
     }
 }
+
 /**
  * 输出叠筐图形
  * @param n 行数
@@ -236,7 +237,7 @@ void stackingBaskets(int n, char in, char out) {
     if (n < 1 || n % 2 != 1 || n > 80) {    //非法数值
         return;
     } else {                                //合法行数
-        for (int i = 0; i < n ; ++i) {      //初始化当前行字符数组
+        for (int i = 0; i < n; ++i) {      //初始化当前行字符数组
             str[i] = in;                    //因为递归先翻转，后输出，所以要全部初始化为筐的内部字符
         }
         str[n] = '\0';                      //存为字符串，方便puts输出
@@ -266,33 +267,85 @@ void stackingBaskets(int n, char in, char out) {
  * 例题 2.6、【题目】今年的第几天？
  * 输入年、月、日，计算该天是本年的第几天。
  */
-void calcDayOfYear(int year,int month,int day){
+void calcDaysOfYear(int year, int month, int day) {
     //c99
-    int monthDays[13]={
-            [1]=31,[3]=31,[5]=31,[7]=31,[8]=31,[10]=31,[12]=31,
-            [4]=30,[6]=30,[9]=30,[11]=30,
+    int monthDays[13] = { //每月天数
+            [1]=31, [3]=31, [5]=31, [7]=31, [8]=31, [10]=31, [12]=31,
+            [4]=30, [6]=30, [9]=30, [11]=30,
             [2]=28
     };
 
-    if ((year%4==0 && year%100!=0) || year%400==0){
-        monthDays[2]+=1;
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) { //判断闰年
+        monthDays[2] += 1;
     }
 
-    int sum=0;
-    for (int i = 1; i <month ; ++i) {
-        sum+=monthDays[i];
+    int sum = 0;  //累计天数
+    for (int i = 1; i < month; ++i) {   //前几个月天数和
+        sum += monthDays[i];
     }
-    sum+=day;
+    sum += day;   //当月天数
 
-    printf("%d\n",sum);
+    printf("%d\n", sum);
 }
 
 /*
- * 例题 2.7、【题目】
- *
+ * 例题 2.7、【题目】打印日期
+ * 给出年份和此年中的第几天，算出这天是几月几号。
  */
+void calcDateOfYear(int year, int n) {
+    //c99
+    int monthDays[13] = { //每月天数
+            [1]=31, [3]=31, [5]=31, [7]=31, [8]=31, [10]=31, [12]=31,
+            [4]=30, [6]=30, [9]=30, [11]=30,
+            [2]=28
+    };
 
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {  //闰年判断
+        monthDays[2] += 1;
+    }
 
+    int sum = 0;  //累计天数
+    for (int i = 1; i <= 12; ++i) {  //月
+        for (int j = 1; j <= monthDays[i]; ++j) { //日
+            sum++;
+            if (sum == n) {    //到达指定天数，输出对应日期
+                printf("%d-%02d-%02d\n", year, i, j);
+                return;
+            }
+        }
+    }
+}
+
+/*
+ * 例题 2.8、【题目】日期累加
+ * 计算一个日期加上若干天后的日期。
+ * 注意：考虑跨年！！！
+ */
+void calcDateAfterDate(int year, int month, int day, int interval) {
+    //c99
+    int monthDays[13] = { //每月天数
+            [1]=31, [3]=31, [5]=31, [7]=31, [8]=31, [10]=31, [12]=31,
+            [4]=30, [6]=30, [9]=30, [11]=30,
+            [2]=28
+    };
+
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {  //闰年判断
+        monthDays[2] += 1;
+    }
+
+    int sum = 0;
+    for (int i = month; i <= 12; ++i) {
+        for (int j = 1; j <= monthDays[i]; ++j) {
+            sum++;
+            if (sum - day == interval) {
+                printf("%d-%02d-%02d\n", year, i, j);
+                return;
+            }
+        }
+    }
+    //考虑跨年
+    calcDateAfterDate(year + 1, 1, 1, interval - (sum - day) - 1);
+}
 
 
 int main() {
@@ -310,9 +363,16 @@ int main() {
     //stackingBaskets(1,'B','A');
     //stackingBaskets(5,'B','A');
     //stackingBaskets(11,'$','*');
-    //calcDayOfYear(1990,9,20);
-    //calcDayOfYear(2000,5,1);
-
+    //calcDaysOfYear(1990,9,20);
+    //calcDaysOfYear(2000,5,1);
+    //calcDateOfYear(2000,3);
+    //calcDateOfYear(2000,31);
+    //calcDateOfYear(2000,40);
+    //calcDateOfYear(2000,60);
+    //calcDateOfYear(2000,61);
+    //calcDateOfYear(2001,60);
+    calcDateAfterDate(2008, 2, 3, 100);
+    calcDateAfterDate(2008, 2, 3, 1000);
 
 
     end = getTime();
