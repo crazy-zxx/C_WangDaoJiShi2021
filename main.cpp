@@ -397,18 +397,116 @@ void calcDateAfterDate(int year, int month, int day, int interval) {
  * 习题 2.6、【题目】日期差值
  * 有两个日期，求两个日期之间的天数，如果两个日期是连续的，则规定它们之间的天数为两天。
  */
+/**
+ * 求两个日期之间的天数（正数）
+ * @param date1 日期一
+ * @param date2 日期二
+ */
+void calcDateGap(int date1, int date2) {
+    //c99
+    int monthDays[13] = { //每月天数
+            [1]=31, [3]=31, [5]=31, [7]=31, [8]=31, [10]=31, [12]=31,
+            [4]=30, [6]=30, [9]=30, [11]=30,
+            [2]=28
+    };
 
+    //分解得年月日
+    int d1 = date1 % 100;
+    int d2 = date2 % 100;
+    int m1 = date1 / 100 % 100;
+    int m2 = date2 / 100 % 100;
+    int y1 = date1 / 10000;
+    int y2 = date2 / 10000;
+
+    if (y1 > y2) {         //1存小日期，2存大日期
+        int temp = y1;
+        y1 = y2;
+        y2 = temp;
+        temp = m1;
+        m1 = m2;
+        m2 = temp;
+        temp = d1;
+        d1 = d2;
+        d2 = temp;
+    }
+
+    int sum1 = 0;     //累计中间经历几年的天数
+    for (int i = y1; i < y2; ++i) {
+        sum1 += 365;
+        if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0) {
+            sum1 += 1;
+        }
+    }
+
+    if ((y1 % 4 == 0 && y1 % 100 != 0) || y1 % 400 == 0) {
+        monthDays[2] += 1;
+    }
+    int sum2 = 0;     //累计小日期本年已度过天数
+    for (int i = 1; i < m1; ++i) {
+        sum2 += monthDays[i];
+    }
+    sum2 += d1;
+
+    monthDays[2] = 28;    //重置2月天数
+
+    if ((y2 % 4 == 0 && y2 % 100 != 0) || y2 % 400 == 0) {
+        monthDays[2] += 1;
+    }
+    int sum3 = 0;     //累计大日期本年已度过天数
+    for (int i = 1; i < m2; ++i) {
+        sum3 += monthDays[i];
+    }
+    sum3 += d2;
+
+    printf("%d\n", sum1 + sum3 - sum2 + 1);
+}
 
 /*
  * 习题 2.7、【题目】Day of Week
  * 编写一个程序，计算给定的日期是周几。
+ * 提示：蔡勒公式！！！
  */
+void calcDayOfWeek(int year, const char *month, int day) {
 
+    //月份映射
+    char *months[15] = {
+            [3]="March", "April", "May", "June", "July", "August",
+            "September", "October", "November", "December", "January", "February"
+    };
+    //星期映射
+    char *week[7] = {
+            "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    };
+
+    int m = 0;  //月份
+    for (int i = 3; i < 15; ++i) {
+        if (!strcmp(month, months[i])) {
+            m = i;
+            break;
+        }
+    }
+    if (m > 12) {   //本年1，2月需要视为去年13，14月
+        year--;
+    }
+
+    int c = year / 100, y = year % 100; //上个世纪，本年后两位
+    int w = (y + y / 4 + c / 4 - 2 * c + (26 * (m + 1) / 10) + day - 1) % 7;    //蔡勒公式
+    printf("%s\n", week[w]);
+}
 
 /*
  * 习题 2.8、【题目】日期类
  * 编写一个日期类，要求按xxxx-xx-xx的格式输出日期，实现加一天的操作。
  */
+void dateClass(){
+    //c99
+    int monthDays[13] = { //每月天数
+            [1]=31, [3]=31, [5]=31, [7]=31, [8]=31, [10]=31, [12]=31,
+            [4]=30, [6]=30, [9]=30, [11]=30,
+            [2]=28
+    };
+
+}
 
 
 
@@ -435,8 +533,11 @@ int main() {
     //calcDateOfYear(2000,60);
     //calcDateOfYear(2000,61);
     //calcDateOfYear(2001,60);
-    calcDateAfterDate(2008, 2, 3, 100);
-    calcDateAfterDate(2008, 2, 3, 1000);
+    //calcDateAfterDate(2008, 2, 3, 100);
+    //calcDateAfterDate(2008, 2, 3, 1000);
+    //calcDateGap(20110412,20110422);
+    calcDayOfWeek(2001, "October", 14);
+    //calcDayOfWeek(2021, "February", 23);
 
 
     end = getTime();
