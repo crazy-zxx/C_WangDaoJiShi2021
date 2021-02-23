@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctime>
-#include <unistd.h>
+#include <algorithm>
+
 #include "tools.h"
 
 
@@ -538,11 +538,11 @@ void dateClass(int year, int month, int day) {
 
 //******************************* 其他模拟 *********************************
 /*
- * 习题 2.9、【题目】略
+ * 例题 2.9、【题目】略
  */
 
 /*
- * 习题 2.10、【题目】手机键盘
+ * 例题 2.10、【题目】手机键盘
  * 按照手机键盘输入字母的方式，计算所花费的时间
  * 如：a,b,c都在“1”键上，输入a只需要按一次，输入c需要连续按三次。
  * 如果连续两个字符不在同一个按键上，则可直接按，如：ad需要按两下，kz需要按6下。
@@ -574,22 +574,68 @@ void calcInputTime(const char *str) {
 }
 
 /*
- * 习题 2.11、【题目】xxx定律(卡拉兹猜想)
+ * 例题 2.11、【题目】xxx定律(卡拉兹猜想)
  * 对于一个数n，如果是偶数，就把n砍掉一半；如果是奇数，把n变成 3*n+1后砍掉一半，直到该数变为1为止。
  * 请计算需要经过几步才能将n变到1，
  */
-void calcCallatz(int n){
-    int t=0;
-    while (n!=1){
-        if (n%2){
-            n=(3*n+1)/2;
-        } else{
-            n/=2;
+void calcCallatz(int n) {
+    int t = 0;
+    while (n != 1) {
+        if (n % 2) {
+            n = (3 * n + 1) / 2;
+        } else {
+            n /= 2;
         }
         t++;
     }
-    printf("%d\n",t);
+    printf("%d\n", t);
 }
+
+/*
+ * 习题 2.9、【题目】
+*/
+
+/*
+ * 习题 2.10、【题目】
+*/
+
+/*
+ * 习题 2.11、【题目】
+*/
+
+
+
+//******************************* 排序 *********************************
+
+/*
+ * 例题 3.1、【题目】排序
+ * 对输入的n个数排序并输出。
+*/
+/**
+ * 用于排序的比较函数
+ * @param a 值
+ * @param b 值
+ * @return 升序：a>b返回正数，a==b返回0,a<b返回负数；降序反之
+ */
+int compare(const void *a, const void *b) {
+    return *(int *) a - *(int *) b;
+}
+/**
+ * 对输入的n个数排序并输出
+ * @param arr 待排序数组
+ * @param n 元素个数
+ */
+void sortN(int arr[], int n) {
+
+    //qsort(arr,n, sizeof(int),compare);    //c排序函数
+
+    std::sort(arr, arr + n);               //c++排序函数（更方便）
+
+    for (int i = 0; i < n; ++i) {
+        printf("%d ", arr[i]);
+    }
+}
+
 
 
 
@@ -627,8 +673,10 @@ int main() {
     //dateClass(2000,2,29);
     //calcInputTime("bob");
     //calcInputTime("www");
-    calcCallatz(3);
-    calcCallatz(1);
+    //calcCallatz(3);
+    //calcCallatz(1);
+    int a[] = {9, 7, 3, 5, 1};
+    sortN(a, 5);
 
 
     end = getTime();
