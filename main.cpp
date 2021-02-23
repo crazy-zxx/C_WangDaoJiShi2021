@@ -466,12 +466,18 @@ void calcDateGap(int date1, int date2) {
  * 编写一个程序，计算给定的日期是周几。
  * 提示：蔡勒公式！！！
  */
+/**
+ * 计算给定的日期是周几(蔡勒公式)
+ * @param year 年
+ * @param month 月
+ * @param day 日
+ */
 void calcDayOfWeek(int year, const char *month, int day) {
 
     //月份映射
     char *months[15] = {
             [3]="March", "April", "May", "June", "July", "August",
-            "September", "October", "November", "December", "January", "February"
+                         "September", "October", "November", "December", "January", "February"
     };
     //星期映射
     char *week[7] = {
@@ -498,14 +504,91 @@ void calcDayOfWeek(int year, const char *month, int day) {
  * 习题 2.8、【题目】日期类
  * 编写一个日期类，要求按xxxx-xx-xx的格式输出日期，实现加一天的操作。
  */
-void dateClass(){
+/**
+ * 按xxxx-xx-xx的格式输出日期，实现加一天的操作。
+ * @param year 年
+ * @param month 月
+ * @param day 日
+ */
+void dateClass(int year, int month, int day) {
     //c99
     int monthDays[13] = { //每月天数
             [1]=31, [3]=31, [5]=31, [7]=31, [8]=31, [10]=31, [12]=31,
             [4]=30, [6]=30, [9]=30, [11]=30,
             [2]=28
     };
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+        monthDays[2] += 1;
+    }
 
+    if (day + 1 > monthDays[month]) {    //跨月
+        month += 1;
+        day = 1;
+        if (month > 12) {              //跨年
+            year += 1;
+            month = 1;
+        }
+    } else {                         //不跨月
+        day += 1;
+    }
+
+    printf("%04d-%02d-%02d\n", year, month, day);
+}
+
+
+//******************************* 其他模拟 *********************************
+/*
+ * 习题 2.9、【题目】略
+ */
+
+/*
+ * 习题 2.10、【题目】手机键盘
+ * 按照手机键盘输入字母的方式，计算所花费的时间
+ * 如：a,b,c都在“1”键上，输入a只需要按一次，输入c需要连续按三次。
+ * 如果连续两个字符不在同一个按键上，则可直接按，如：ad需要按两下，kz需要按6下。
+ * 如果连续两字符在同一个按键上，则两个按键之间需要等一段时间，如ac，在按了a之后，需要等一会儿才能按c。
+ * 现在假设每按一次需要花费一个时间段，等待时间需要花费两个时间段。
+ * 现在给出一串字符，需要计算出它所需要花费的时间。
+ */
+/**
+ * 按照手机键盘输入字母的方式，计算所花费的时间
+ * @param str 待输入的字符串
+ */
+void calcInputTime(const char *str) {
+    if (!str || str[0] == '\0') {
+        return;
+    }
+    //映射每个字母键入需要的时间
+    int times[26] = {1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 1, 2, 3, 4};
+
+    int len = strlen(str);
+    int t = times[str[0] - 'a'];    //累计时间，初始化为第一个字符键入时间
+    for (int i = 1; i < len; ++i) { //累计后续所有字符需要的键入时间
+        t += times[str[i] - 'a'];   //第i个字符键入所需时间
+        // 前后字符在同一按键上需要加时间间隔
+        if (str[i] - str[i - 1] == times[str[i] - 'a'] - times[str[i - 1] - 'a']) {    //前后字符同键
+            t += 2;
+        }
+    }
+    printf("%d\n", t);
+}
+
+/*
+ * 习题 2.11、【题目】xxx定律(卡拉兹猜想)
+ * 对于一个数n，如果是偶数，就把n砍掉一半；如果是奇数，把n变成 3*n+1后砍掉一半，直到该数变为1为止。
+ * 请计算需要经过几步才能将n变到1，
+ */
+void calcCallatz(int n){
+    int t=0;
+    while (n!=1){
+        if (n%2){
+            n=(3*n+1)/2;
+        } else{
+            n/=2;
+        }
+        t++;
+    }
+    printf("%d\n",t);
 }
 
 
@@ -536,8 +619,16 @@ int main() {
     //calcDateAfterDate(2008, 2, 3, 100);
     //calcDateAfterDate(2008, 2, 3, 1000);
     //calcDateGap(20110412,20110422);
-    calcDayOfWeek(2001, "October", 14);
+    //calcDayOfWeek(2001, "October", 14);
     //calcDayOfWeek(2021, "February", 23);
+    //dateClass(1999,10,20);
+    //dateClass(1999,12,31);
+    //dateClass(2000,2,28);
+    //dateClass(2000,2,29);
+    //calcInputTime("bob");
+    //calcInputTime("www");
+    calcCallatz(3);
+    calcCallatz(1);
 
 
     end = getTime();
