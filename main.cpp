@@ -475,12 +475,12 @@ void calcDateGap(int date1, int date2) {
 void calcDayOfWeek(int year, const char *month, int day) {
 
     //月份映射
-    char *months[15] = {
+    const char *months[15] = {
             [3]="March", "April", "May", "June", "July", "August",
                          "September", "October", "November", "December", "January", "February"
     };
     //星期映射
-    char *week[7] = {
+    const char *week[7] = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     };
 
