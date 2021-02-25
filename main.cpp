@@ -620,6 +620,7 @@ void calcCallatz(int n) {
 int compare(const void *a, const void *b) {
     return *(int *) a - *(int *) b;
 }
+
 /**
  * 对输入的n个数排序并输出
  * @param arr 待排序数组
@@ -627,12 +628,45 @@ int compare(const void *a, const void *b) {
  */
 void sortN(int arr[], int n) {
 
-    //qsort(arr,n, sizeof(int),compare);    //c排序函数
+    //qsort(arr,n, sizeof(int),compare);        //c排序函数
 
     std::sort(arr, arr + n);               //c++排序函数（更方便）
 
     for (int i = 0; i < n; ++i) {
         printf("%d ", arr[i]);
+    }
+}
+
+/*
+ * 例题 3.2、【题目】成绩排序
+ * 用一维数组存储学号和成绩，然后按成绩排序输出。
+*/
+typedef struct student {
+    int no;
+    int score;
+} STU;
+/**
+ * 用于排序的比较函数（true：a,b; false:b,a）
+ * @param a
+ * @param b
+ * @return
+ */
+bool compareByScoreAndNo(STU a, STU b) {
+    if (a.score == b.score) {
+        return a.no < b.no;
+    } else {
+        return a.score < b.score;
+    }
+}
+/**
+ * 按照成绩排序
+ * @param students
+ * @param n
+ */
+void sortScore(STU students[], int n) {
+    std::sort(students,students+n,compareByScoreAndNo);
+    for (int i = 0; i < n; ++i) {
+        printf("%d %d\n",students[i].no,students[i].score);
     }
 }
 
@@ -675,9 +709,10 @@ int main() {
     //calcInputTime("www");
     //calcCallatz(3);
     //calcCallatz(1);
-    int a[] = {9, 7, 3, 5, 1};
-    sortN(a, 5);
-
+    // int a[] = {9, 7, 3, 5, 1};
+    // sortN(a, 5);
+    STU s[]={{1,10},{2,5},{3,20},{4,15},{5,10}};
+    sortScore(s,5);
 
     end = getTime();
     printf("\ntime spend:%f ms\n", (end - start));
