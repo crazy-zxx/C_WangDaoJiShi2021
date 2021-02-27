@@ -641,17 +641,54 @@ void sortN(int arr[], int n) {
  * 例题 3.2、【题目】成绩排序
  * 用一维数组存储学号和成绩，然后按成绩排序输出。
 */
-typedef struct student {
+typedef struct student1 {
     int no;
     int score;
-} STU;
+} STU1;
+
 /**
  * 用于排序的比较函数（true：a,b; false:b,a）
  * @param a
  * @param b
  * @return
  */
-bool compareByScoreAndNo(STU a, STU b) {
+bool compareByScoreAndNo(STU1 a, STU1 b) {
+    if (a.score == b.score) {
+        return a.no < b.no;
+    } else {
+        return a.score < b.score;
+    }
+}
+
+/**
+ * 按照成绩排序
+ * @param students
+ * @param n
+ */
+void sortScore1(STU1 students[], int n) {
+    std::sort(students, students + n, compareByScoreAndNo);
+    for (int i = 0; i < n; ++i) {
+        printf("%d %d\n", students[i].no, students[i].score);
+    }
+}
+
+/*
+ * 例题 3.3、【题目】成绩排序
+ * 输入任意(用户，成绩)序列，可以获得成绩从高到低或从低到高的排列，相同成绩都按先录入者排列在前的规则处理。
+ * 输入多行，首先输入要排序的人的个数，然后输入排序方法0 (降序)或1 (升序),再分别输入他们的名字和成绩，以一个空格隔开。
+*/
+typedef struct student2 {
+    char name[100];
+    int no;
+    int score;
+} STU2;
+/**
+ * 用于升序排序的比较函数（true：a,b; false:b,a）
+ * @param a
+ * @param b
+ * @return
+ */
+bool compareByScoreAndNoAscending(STU2 a, STU2 b) {
     if (a.score == b.score) {
         return a.no < b.no;
     } else {
@@ -659,21 +696,35 @@ bool compareByScoreAndNo(STU a, STU b) {
     }
 }
 /**
- * 按照成绩排序
- * @param students
- * @param n
+ * 用于降序排序的比较函数（true：a,b; false:b,a）
+ * @param a
+ * @param b
+ * @return
  */
-void sortScore(STU students[], int n) {
-    std::sort(students,students+n,compareByScoreAndNo);
-    for (int i = 0; i < n; ++i) {
-        printf("%d %d\n",students[i].no,students[i].score);
+bool compareByScoreAndNoDescending(STU2 a, STU2 b) {
+    if (a.score == b.score) {
+        return a.no < b.no;
+    } else {
+        return a.score > b.score;
     }
 }
+/**
+ * 按成绩排序
+ * @param students
+ * @param n
+ * @param type 排序类型
+ */
+void sortScore2(STU2 students[], int n, int type) {
+    if (type) {
+        std::sort(students, students + n, compareByScoreAndNoAscending);
+    } else {
+        std::sort(students, students + n, compareByScoreAndNoDescending);
+    }
 
-/*
- * 例题 3.3、【题目】成绩排序
- *
-*/
+    for (int i = 0; i < n; ++i) {
+        printf("%s %d %d\n", students[i].name,students[i].no, students[i].score);
+    }
+}
 
 
 int main() {
@@ -714,8 +765,20 @@ int main() {
     //calcCallatz(1);
     // int a[] = {9, 7, 3, 5, 1};
     // sortN(a, 5);
-    STU s[]={{1,10},{2,5},{3,20},{4,15},{5,10}};
-    sortScore(s,5);
+    // STU1 s[] = {{1, 10},
+    //            {2, 5},
+    //            {3, 20},
+    //            {4, 15},
+    //            {5, 10}};
+    // sortScore1(s, 5);
+    STU2 s[] = {{"asd1",1, 10},
+                {"asd2",2, 5},
+                {"asd3",3, 20},
+                {"asd4",4, 15},
+                {"asd5",5, 10}};
+    sortScore2(s, 5,0);
+    sortScore2(s, 5,1);
+
 
     end = getTime();
     printf("\ntime spend:%f ms\n", (end - start));
