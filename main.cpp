@@ -670,7 +670,10 @@ void sortScore(STU students[], int n) {
     }
 }
 
-
+/*
+ * 例题 3.3、【题目】成绩排序
+ *
+*/
 
 
 int main() {
