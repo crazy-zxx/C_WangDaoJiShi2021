@@ -849,6 +849,7 @@ typedef struct twoNum {
     int x;
     int y;
 } TwoNum;
+
 /**
  * 比较函数，优先x最小，再取y最小
  * @param a
@@ -862,6 +863,7 @@ bool compareXY(TwoNum a, TwoNum b) {
         return a.x < b.x;
     }
 }
+
 /**
  * 查找最小数对
  * @param a
@@ -876,22 +878,22 @@ void findMin1(TwoNum a[], int n) {
 /**
  * 查找最小数对（在线处理）
  */
-void findMin2(){
+void findMin2() {
     int n;
-    while(scanf("%d",&n)==1){
-        int x,y;
-        int minx=INT32_MAX,miny=INT32_MAX;
-        for(int i=0;i<n;++i){
-            scanf("%d%d",&x,&y);
+    while (scanf("%d", &n) == 1) {
+        int x, y;
+        int minx = INT32_MAX, miny = INT32_MAX;
+        for (int i = 0; i < n; ++i) {
+            scanf("%d%d", &x, &y);
             //在线处理
-            if(x<minx){
-                minx=x;
-                miny=y;
-            }else if(x==minx && y<miny){
-                miny=y;
+            if (x < minx) {
+                minx = x;
+                miny = y;
+            } else if (x == minx && y < miny) {
+                miny = y;
             }
         }
-        printf("%d %d\n", minx,miny);
+        printf("%d %d\n", minx, miny);
     }
 }
 
@@ -905,10 +907,11 @@ void findMin2(){
  * @param a
  * @param n
  */
-void findExtremePoint(int a[],int n){
+void findExtremePoint(int a[], int n) {
     for (int i = 0; i < n; ++i) {
-        if ((i==0 && a[1]!=a[0])|| (i==n-1 && a[n-2]!=a[n-1] ) || (a[i-1]<a[i] && a[i]>a[i+1]) ||(a[i-1]>a[i] && a[i]<a[i+1])){
-            printf("%d ",i);
+        if ((i == 0 && a[1] != a[0]) || (i == n - 1 && a[n - 2] != a[n - 1]) || (a[i - 1] < a[i] && a[i] > a[i + 1]) ||
+            (a[i - 1] > a[i] && a[i] < a[i + 1])) {
+            printf("%d ", i);
         }
     }
     printf("\n");
@@ -916,9 +919,57 @@ void findExtremePoint(int a[],int n){
 
 
 /*
- * 习题 3.7、【题目】
- *
+ * 习题 3.7、【题目】找位置
+ * 对给定的一个字符串，找出有重复的字符，并给出其位置。
 */
+typedef struct nodeStr {
+    int no;     //下标
+    int order;  //出现的次序
+    char c;     //字符
+} NodeStr;
+
+bool compareCharNode(NodeStr a, NodeStr b) {
+    if (a.c == b.c) {   //同一字符，按照下标排序
+        return a.no < b.no;
+    } else {            //不同字符，按照出现的次序排序
+        return a.order < b.order;
+    }
+}
+
+/**
+ * 对给定的一个字符串，找出有重复的字符，并给出其位置
+ * @param str
+ */
+void findRepeatCharLocation(const char *str) {
+
+    int hash[256] = {0};    //保存每个字符首次出现的次序
+    int len = strlen(str);
+    int count = 0;          //计数是第几个不同字符
+    NodeStr ns[len];
+    for (int i = 0; i < len; ++i) {     //映射
+        if (hash[str[i]]) {             //出现一个重复字符，使用首次出现的次序
+            ns[i].order = hash[str[i]];
+        } else {                        //出现一个新字符，更新该字符的首次次序记录，并使用当前次序
+            count++;
+            ns[i].order = hash[str[i]] = count;
+        }
+        ns[i].no = i;
+        ns[i].c = str[i];
+    }
+    std::sort(ns, ns + len, compareCharNode);   //排序
+    for (int i = 0; i < len; ++i) {                 //输出
+        //临近字符相同则是重复字符需要输出，否则跳过
+        bool flag=i < len - 1 && ns[i].c == ns[i + 1].c;
+        if ((i > 0 && ns[i - 1].c == ns[i].c) || flag) {
+            printf("%c:%d", ns[i].c, ns[i].no);
+            if (flag) {                     //下一个字符相同，输出逗号分隔
+                printf(",");
+            } else {                        //下一个字符不同，输出换行分隔
+                printf("\n");
+            }
+        }
+    }
+}
 
 /*
  * 例题 4.1、【题目】
@@ -1001,9 +1052,9 @@ int main() {
     //               {2, 1},
     //               {3, 6}};
     // findMin1(a,5);
-    int a[]={12 ,12, 122 ,112 ,222 ,211 ,222, 221 ,76 ,36, 31 ,234, 256, 76 ,76};
-    findExtremePoint(a,15);
-
+    // int a[]={12 ,12, 122 ,112 ,222 ,211 ,222, 221 ,76 ,36, 31 ,234, 256, 76 ,76};
+    // findExtremePoint(a,15);
+    findRepeatCharLocation("kygexrrwunuwxalgcbxistydvrxmfyhbzgfpjwtrsaszqkxqjrgchhybxuzlmccafsljlfdse");
 
 
     end = getTime();
