@@ -682,6 +682,7 @@ typedef struct student2 {
     int no;
     int score;
 } STU2;
+
 /**
  * 用于升序排序的比较函数（true：a,b; false:b,a）
  * @param a
@@ -695,6 +696,7 @@ bool compareByScoreAndNoAscending(STU2 a, STU2 b) {
         return a.score < b.score;
     }
 }
+
 /**
  * 用于降序排序的比较函数（true：a,b; false:b,a）
  * @param a
@@ -708,6 +710,7 @@ bool compareByScoreAndNoDescending(STU2 a, STU2 b) {
         return a.score > b.score;
     }
 }
+
 /**
  * 按成绩排序
  * @param students
@@ -722,41 +725,147 @@ void sortScore2(STU2 students[], int n, int type) {
     }
 
     for (int i = 0; i < n; ++i) {
-        printf("%s %d %d\n", students[i].name,students[i].no, students[i].score);
+        printf("%s %d %d\n", students[i].name, students[i].no, students[i].score);
     }
 }
 
 /*
  * 习题 3.1、【题目】特殊排序
- * 输入一系列整数，将其中最大的数挑出去除(有多个最大数时，挑出一个即可)，并对剩下的数排序，如果无剩下的数，那么输出-1。
+ * 输入一系列整数，将其中最大的数挑出输出(有多个最大数时，挑出一个即可)，并对剩下的数排序，如果无剩下的数，那么输出-1。
 */
-void sortAndDeleteMax(int a[],int n){
-    if (n==1){
-        printf("%d\n-1\n",a[0]);
-    } else{
-        std::sort(a,a+n);
-        printf("%d\n",a[n-1]);
-        for (int i = 0; i < n-1; ++i) {
-            printf("%d ",a[i]);
+/**
+ * 输入一系列整数,将其中最大的数挑出输出(有多个最大数时，挑出一个即可)，并对剩下的数排序输出,如果无剩下的数，那么输出-1。
+ * @param a
+ * @param n 元素个数
+ */
+void sortAndDeleteMax(int a[], int n) {
+    if (n == 1) {
+        printf("%d\n-1\n", a[0]);
+    } else {
+        std::sort(a, a + n);
+        printf("%d\n", a[n - 1]);
+        for (int i = 0; i < n - 1; ++i) {
+            printf("%d ", a[i]);
         }
+    }
+}
+
+/*
+ * 习题 3.2、【题目】整数奇偶排序
+ * 输入10个整数，彼此以空格分隔。重新排序以后输出(也按空格分隔)，要求:
+ * 1.先输出其中的奇数,并按从大到小排列；
+ * 2.然后输出其中的偶数,并按从小到大排列。
+*/
+void sortEvenOdd(int a[], int n) {
+    std::sort(a, a + n);
+    for (int i = n - 1; i >= 0; --i) {
+        if (a[i] % 2) {
+            printf("%d ", a[i]);
+        }
+    }
+    for (int i = 0; i < n; ++i) {
+        if (a[i] % 2 == 0) {
+            printf("%d ", a[i]);
+        }
+    }
+}
+
+/*
+ * 习题 3.3、【题目】小白鼠排队
+ * N只小白鼠(1 <= N <= 100)，每只鼠头上戴着一顶有颜色的帽子。
+ * 现在称出每只白鼠的重量，要求按照白鼠重量从大到小的顺序输出它们头上帽子的颜色。
+ * 帽子的颜色用“red”，“blue”等字符串来表示。不同的小白鼠可以戴相同颜色的帽子。
+ * 白鼠的重量用整数表示。
+*/
+typedef struct mouse {
+    int weight;
+    char color[20];
+} Mouse;
+
+bool compareMouse(Mouse a, Mouse b) {
+    return a.weight > b.weight;
+}
+
+void mouseQueue(Mouse m[], int n) {
+    std::sort(m, m + n, compareMouse);
+    for (int i = 0; i < n; ++i) {
+        printf("%s\n", m[i].color);
     }
 }
 
 
 /*
- * 习题 3.2、【题目】
+ * 习题 3.4、【题目】奥运排序问题
+*/
+
+
+//******************************* 查找 *********************************
+
+/*
+ * 例题 3.4、【题目】找x
+ * 输入一个数n，然后输入n个数值各不相同，再输入一个值x，输出这个值在这个数组中的下标（从0开始，若不在数组中则输出-1）。
+*/
+void findX(int a[], int n, int x) {
+    for (int i = 0; i < n; ++i) {
+        if (a[i] == x) {
+            printf("%d\n", i);
+            return;
+        }
+    }
+    printf("-1\n");
+}
+
+/*
+ * 例题 3.4、【题目】查找
+ * 输入数组长度 n 输入数组 a[1...n] 输入查找个数 m 输入查找数字 b[1...m] ，输出 YES or NO ，查找有则YES 否则NO 。
+*/
+void findMany(int a[], int n, int b[], int m) {
+
+    for (int i = 0; i < m; ++i) {
+        int l = 0, h = n - 1, mid;
+        while (l <= h) {
+            mid = (l + h) / 2;
+            if (a[mid] == b[i]) {
+                printf("YES\n");
+                break;
+            } else if (a[mid] < b[i]) {
+                l = mid + 1;
+            } else {
+                h = mid - 1;
+            }
+        }
+        if (l > h) {
+            printf("NO\n");
+        }
+    }
+}
+
+/*
+ * 习题 3.5、【题目】找最小数
+ * 第一行输入一个数n，1 <= n <= 1000，下面输入n行数据，每一行有两个数，分别是x y。
+ * 输出一组x y，该组数据是所有数据中x最小，且在x相等的情况下y最小的。
+*/
+
+
+/*
+ * 习题 3.6、【题目】
  *
 */
 
 /*
- * 习题 3.3、【题目】
+ * 习题 3.7、【题目】
  *
 */
 
 /*
- * 习题 3.4、【题目】
+ * 例题 4.1、【题目】
  *
 */
+
+
+//*******************************  *********************************
+
+
 
 int main() {
 
@@ -809,8 +918,20 @@ int main() {
     //             {"asd5",5, 10}};
     // sortScore2(s, 5,0);
     // sortScore2(s, 5,1);
-    int a[] = {9, 7, 3, 5, 1};
-    sortAndDeleteMax(a,5);
+    // int a[] = {9, 7, 3, 5, 1};
+    // sortAndDeleteMax(a,5);
+    // int a[10]={47,13,11,7,3,0 ,4, 12 ,34, 98};
+    // sortEvenOdd(a,10);
+    // Mouse m[]={{20,"red"},
+    //            {12,"blue"},
+    //            {35,"green"}};
+    // mouseQueue(m,3);
+    // int a[]={1,2,3,4,5};
+    // findX(a,5,6);
+    int a[] = {1, 5, 2, 4, 3};
+    int b[] = {2, 5, 6};
+    std::sort(a,a+5);
+    findMany(a, 5, b, 3);
 
 
     end = getTime();
