@@ -730,7 +730,17 @@ void sortScore2(STU2 students[], int n, int type) {
  * 习题 3.1、【题目】特殊排序
  * 输入一系列整数，将其中最大的数挑出去除(有多个最大数时，挑出一个即可)，并对剩下的数排序，如果无剩下的数，那么输出-1。
 */
-
+void sortAndDeleteMax(int a[],int n){
+    if (n==1){
+        printf("%d\n-1\n",a[0]);
+    } else{
+        std::sort(a,a+n);
+        printf("%d\n",a[n-1]);
+        for (int i = 0; i < n-1; ++i) {
+            printf("%d ",a[i]);
+        }
+    }
+}
 
 
 /*
@@ -792,13 +802,15 @@ int main() {
     //            {4, 15},
     //            {5, 10}};
     // sortScore1(s, 5);
-    STU2 s[] = {{"asd1",1, 10},
-                {"asd2",2, 5},
-                {"asd3",3, 20},
-                {"asd4",4, 15},
-                {"asd5",5, 10}};
-    sortScore2(s, 5,0);
-    sortScore2(s, 5,1);
+    // STU2 s[] = {{"asd1",1, 10},
+    //             {"asd2",2, 5},
+    //             {"asd3",3, 20},
+    //             {"asd4",4, 15},
+    //             {"asd5",5, 10}};
+    // sortScore2(s, 5,0);
+    // sortScore2(s, 5,1);
+    int a[] = {9, 7, 3, 5, 1};
+    sortAndDeleteMax(a,5);
 
 
     end = getTime();
