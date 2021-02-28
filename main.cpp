@@ -845,12 +845,61 @@ void findMany(int a[], int n, int b[], int m) {
  * 第一行输入一个数n，1 <= n <= 1000，下面输入n行数据，每一行有两个数，分别是x y。
  * 输出一组x y，该组数据是所有数据中x最小，且在x相等的情况下y最小的。
 */
+typedef struct twoNum {
+    int x;
+    int y;
+} TwoNum;
+/**
+ * 比较函数，优先x最小，再取y最小
+ * @param a
+ * @param b
+ * @return
+ */
+bool compareXY(TwoNum a, TwoNum b) {
+    if (a.x == b.x) {
+        return a.y < b.y;
+    } else {
+        return a.x < b.x;
+    }
+}
+/**
+ * 查找最小数对
+ * @param a
+ * @param n
+ */
+void findMin1(TwoNum a[], int n) {
 
+    std::sort(a, a + n, compareXY);
+    printf("%d %d\n", a[0].x, a[0].y);
+}
+
+/**
+ * 查找最小数对（在线处理）
+ */
+void findMin2(){
+    int n;
+    while(scanf("%d",&n)==1){
+        int x,y;
+        int minx=INT32_MAX,miny=INT32_MAX;
+        for(int i=0;i<n;++i){
+            scanf("%d%d",&x,&y);
+            //在线处理
+            if(x<minx){
+                minx=x;
+                miny=y;
+            }else if(x==minx && y<miny){
+                miny=y;
+            }
+        }
+        printf("%d %d\n", minx,miny);
+    }
+}
 
 /*
  * 习题 3.6、【题目】
  *
 */
+
 
 /*
  * 习题 3.7、【题目】
@@ -928,10 +977,19 @@ int main() {
     // mouseQueue(m,3);
     // int a[]={1,2,3,4,5};
     // findX(a,5,6);
-    int a[] = {1, 5, 2, 4, 3};
-    int b[] = {2, 5, 6};
-    std::sort(a,a+5);
-    findMany(a, 5, b, 3);
+    // int a[] = {1, 5, 2, 4, 3};
+    // int b[] = {2, 5, 6};
+    // std::sort(a,a+5);
+    // findMany(a, 5, b, 3);
+    // TwoNum a[] = {{3, 3},
+    //               {2, 2},
+    //               {5, 5},
+    //               {2, 1},
+    //               {3, 6}};
+    // findMin1(a,5);
+
+
+
 
 
     end = getTime();
