@@ -1026,13 +1026,21 @@ void encodeStr(const char *str) {
 void caesarDecode(const char *str) {
     int len = strlen(str);
     for (int i = 0; i < len; ++i) {
-        if ('A' <= str[i] && str[i] <= 'E') {
-            putchar(str[i] + 21);
-        } else if ('F' <= str[i] && str[i] <= 'Z') {
-            putchar(str[i] - 5);
+        //方法一：循环移位，统一处理
+        if ('A' <= str[i] && str[i] <= 'Z') {
+            putchar((str[i] - 'A' - 5 + 26) % 26 + 'A');
         } else {
             putchar(str[i]);
         }
+
+        //方法二：判断区间，分类处理
+        // if ('A' <= str[i] && str[i] <= 'E') {
+        //     putchar(str[i] + 21);
+        // } else if ('F' <= str[i] && str[i] <= 'Z') {
+        //     putchar(str[i] - 5);
+        // } else {
+        //     putchar(str[i]);
+        // }
     }
 }
 
@@ -1122,7 +1130,7 @@ int main() {
     // findRepeatCharLocation("kygexrrwunuwxalgcbxistydvrxmfyhbzgfpjwtrsaszqkxqjrgchhybxuzlmccafsljlfdse");
     // specialMultiplication("123","45");
     // encodeStr("Hello! How are you!");
-    // caesarDecode("NS BFW, JAJSYX TK NRUTWYFSHJ FWJ YMJ WJXZQY TK YWNANFQ HFZXJX");
+    caesarDecode("NS BFW, JAJSYX TK NRUTWYFSHJ FWJ YMJ WJXZQY TK YWNANFQ HFZXJX");
 
 
 
