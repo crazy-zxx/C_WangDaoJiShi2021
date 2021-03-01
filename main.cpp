@@ -959,7 +959,7 @@ void findRepeatCharLocation(const char *str) {
     std::sort(ns, ns + len, compareCharNode);   //排序
     for (int i = 0; i < len; ++i) {                 //输出
         //临近字符相同则是重复字符需要输出，否则跳过
-        bool flag=i < len - 1 && ns[i].c == ns[i + 1].c;
+        bool flag = i < len - 1 && ns[i].c == ns[i + 1].c;
         if ((i > 0 && ns[i - 1].c == ns[i].c) || flag) {
             printf("%c:%d", ns[i].c, ns[i].no);
             if (flag) {                     //下一个字符相同，输出逗号分隔
@@ -971,13 +971,78 @@ void findRepeatCharLocation(const char *str) {
     }
 }
 
+
+//******************************* 字符串 *********************************
+
 /*
- * 例题 4.1、【题目】
- *
+ * 例题 4.1、【题目】特殊乘法
+ * 写个算法，对2个小于1000000000的输入，求结果。
+ * 特殊乘法举例：123 * 45 = 1*4 +1*5 +2*4 +2*5 +3*4+3*5
 */
+void specialMultiplication(const char *a, const char *b) {
+    int lenA = strlen(a);
+    int lenB = strlen(b);
+    int sum = 0;
+    for (int i = 0; i < lenA; ++i) {
+        for (int j = 0; j < lenB; ++j) {
+            sum += (a[i] - '0') * (b[j] - '0');
+        }
+    }
+    printf("%d\n", sum);
+}
+
+/*
+ * 例题 4.2、【题目】密码翻译
+ * 我们给出一种最简的的加密方法，对给定的一个字符串，
+ * 把其中从a-y,A-Y的字母用其后继字母替代，把z和Z用a和A替代，则可得到一个简单的加密字符串。
+*/
+void encodeStr(const char *str) {
+    char result[100];
+    int len = strlen(str);
+    for (int i = 0; i < len; ++i) {
+        if (('a' <= str[i] && str[i] <= 'y') || ('A' <= str[i] && str[i] <= 'Y')) {
+            result[i] = str[i] + 1;
+        } else if ('z' == str[i] || 'Z' == str[i]) {
+            result[i] = str[i] - 25;
+        } else {
+            result[i] = str[i];
+        }
+    }
+    result[len] = '\0';
+    puts(result);
+}
+
+/*
+ * 例题 4.3、【题目】简单密码
+ * Julius Caesar曾经使用过一种很简单的密码。
+ * 对于明文中的每个字符，将它用它字母表中后5位对应的字符来代替，这样就得到了密文。
+ * 比如字符A用F来代替。如下是密文和明文中字符的对应关系。
+ * 密文 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+ * 明文 V W X Y Z A B C D E F G H I J K L M N O P Q R S T U
+ * 你的任务是对给定的密文进行解密得到明文。
+ * 你需要注意的是，密文中出现的字母都是大写字母。
+ * 密文中也包括非字母的字符，对这些字符不用进行解码。
+*/
+void caesarDecode(const char *str) {
+    int len = strlen(str);
+    for (int i = 0; i < len; ++i) {
+        if ('A' <= str[i] && str[i] <= 'E') {
+            putchar(str[i] + 21);
+        } else if ('F' <= str[i] && str[i] <= 'Z') {
+            putchar(str[i] - 5);
+        } else {
+            putchar(str[i]);
+        }
+    }
+}
 
 
 //*******************************  *********************************
+
+/*
+ * 例题 5.1、【题目】
+ *
+*/
 
 
 
@@ -1054,7 +1119,11 @@ int main() {
     // findMin1(a,5);
     // int a[]={12 ,12, 122 ,112 ,222 ,211 ,222, 221 ,76 ,36, 31 ,234, 256, 76 ,76};
     // findExtremePoint(a,15);
-    findRepeatCharLocation("kygexrrwunuwxalgcbxistydvrxmfyhbzgfpjwtrsaszqkxqjrgchhybxuzlmccafsljlfdse");
+    // findRepeatCharLocation("kygexrrwunuwxalgcbxistydvrxmfyhbzgfpjwtrsaszqkxqjrgchhybxuzlmccafsljlfdse");
+    // specialMultiplication("123","45");
+    // encodeStr("Hello! How are you!");
+    // caesarDecode("NS BFW, JAJSYX TK NRUTWYFSHJ FWJ YMJ WJXZQY TK YWNANFQ HFZXJX");
+
 
 
     end = getTime();
