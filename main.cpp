@@ -1173,6 +1173,23 @@ void calcSkew(const char *str){
  * 该字符串由若干个单词组成，单词之间用一个空格隔开，所有单词区分大小写。
  * 现需要将其中的某个单词替换成另一个单词，并输出替换之后的字符串。
  */
+void replaceStr(char *str,const char *a,const char *b){
+    // strtok() 函数的使用
+    char *token=strtok(str," ");        //首次使用，获得分割的第一块
+    while (token){
+        if(!strcmp(token,a)){
+            printf("%s",b);
+        } else{
+            printf("%s",token);
+        }
+        token=strtok(NULL," ");     //继续获得分割的下一块
+        if (token){
+            printf(" ");
+        }
+    }
+    printf("\n");
+}
+
 
 
 
@@ -1265,8 +1282,13 @@ int main() {
     // caesarEncode("IN WAR, EVENTS OF IMPORTANCE ARE THE RESULT OF TRIVIAL CAUSES");
     // puts(encode("abcxyzABCXYZ", 3, 4));
     // puts(decode("defabcEFGBCD", 3, 4));
-    calcCountChar("safadadafsdfs",'a');
-    calcCountAlphabet("fdGFGHDHJHJDSASFJKFHJKGHJVNVBXWAWTE");
+    // calcCountChar("safadadafsdfs",'a');
+    // calcCountAlphabet("fdGFGHDHJHJDSASFJKFHJKGHJVNVBXWAWTE");
+    // calcSkew("010010112");
+    char s[]="azure C silver C orange blue AAAA azure silver red gold CCCCC orange CCCC orange gold III BBB azure CCCCCC";
+    replaceStr(s, "CCC", "sliver");
+
+
 
 
     end = getTime();
