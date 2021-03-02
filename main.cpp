@@ -1119,6 +1119,38 @@ char *decode(const char *str, int a, int b) {
     return result;
 }
 
+/*
+ * 例题 4.4、【题目】统计字符
+ * 统计一个给定字符串中指定的字符出现的次数。
+ */
+void calcCountChar(const char *str,char c){
+    int len=strlen(str);
+    int count=0;
+    for (int i = 0; i < len; ++i) {
+        if (str[i]==c){
+            count++;
+        }
+    }
+    printf("%d\n",count);
+}
+
+/*
+ * 例题 4.5、【题目】字母统计
+ * 输入一行字符串，计算其中A-Z大写字母出现的次数
+ */
+void calcCountAlphabet(const char *str){
+    int len=strlen(str);
+    int num[26]={0};    //计数每个字母的次数
+    for (int i = 0; i < len; ++i) {
+        if (isupper(str[i])){
+            num[str[i]-'A']++;  //hash映射思想
+        }
+    }
+    for (int i = 0; i < 26; ++i) {
+        printf("%c:%d\n",'A'+i,num[i]);
+    }
+}
+
 
 
 //*******************************  *********************************
@@ -1208,8 +1240,11 @@ int main() {
     // encodeStr("Hello! How are you!");
     // caesarDecode("NS BFW, JAJSYX TK NRUTWYFSHJ FWJ YMJ WJXZQY TK YWNANFQ HFZXJX");
     // caesarEncode("IN WAR, EVENTS OF IMPORTANCE ARE THE RESULT OF TRIVIAL CAUSES");
-    puts(encode("abcxyzABCXYZ", 3, 4));
-    puts(decode("defabcEFGBCD", 3, 4));
+    // puts(encode("abcxyzABCXYZ", 3, 4));
+    // puts(decode("defabcEFGBCD", 3, 4));
+    calcCountChar("safadadafsdfs",'a');
+    calcCountAlphabet("fdGFGHDHJHJDSASFJKFHJKGHJVNVBXWAWTE");
+
 
     end = getTime();
     printf("\ntime spend:%f ms\n", (end - start));
