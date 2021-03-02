@@ -1012,6 +1012,11 @@ void encodeStr(const char *str) {
     puts(result);
 }
 
+
+// ***************** 凯撒密码的求解：循环移位 *****************************
+// 加密：(str[i] - 'A' + offset) % 26 + 'A'
+// 解密：(str[i] - 'A' - offset + 26) % 26 + 'A'
+
 /*
  * 例题 4.3、【题目】简单密码
  * Julius Caesar曾经使用过一种很简单的密码。
@@ -1113,6 +1118,7 @@ char *decode(const char *str, int a, int b) {
     }
     return result;
 }
+
 
 
 //*******************************  *********************************
