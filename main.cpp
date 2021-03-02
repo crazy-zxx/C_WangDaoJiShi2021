@@ -1023,6 +1023,10 @@ void encodeStr(const char *str) {
  * 你需要注意的是，密文中出现的字母都是大写字母。
  * 密文中也包括非字母的字符，对这些字符不用进行解码。
 */
+/**
+ * 凯撒密码，解密
+ * @param str
+ */
 void caesarDecode(const char *str) {
     int len = strlen(str);
     for (int i = 0; i < len; ++i) {
@@ -1042,6 +1046,72 @@ void caesarDecode(const char *str) {
         //     putchar(str[i]);
         // }
     }
+    putchar('\n');
+}
+
+/**
+ * 凯撒密码，加密
+ * @param str
+ */
+void caesarEncode(const char *str) {
+    int len = strlen(str);
+    for (int i = 0; i < len; ++i) {
+        //方法一：循环移位，统一处理
+        if ('A' <= str[i] && str[i] <= 'Z') {
+            putchar((str[i] - 'A' + 5) % 26 + 'A');
+        } else {
+            putchar(str[i]);
+        }
+
+        //方法二：判断区间，分类处理
+        // if ('V' <= str[i] && str[i] <= 'Z') {
+        //     putchar(str[i] - 21);
+        // } else if ('A' <= str[i] && str[i] <= 'U') {
+        //     putchar(str[i] + 5);
+        // } else {
+        //     putchar(str[i]);
+        // }
+    }
+    putchar('\n');
+}
+
+/* 扩展：【题目】文本替换加密
+ * 加密规则：明文中小写字母用其后面的第a个字母替换（a<26），大写字母用其后面的第b个字母替换（b<26），
+ * 可将字母表看成是首尾相接的。例如a=3，字母‘c’替换成‘f’，字母‘y’替换成‘b’。
+ * 解密规则：输入密钥（加密用到的数字a和b），将密文中小写字母用其前面的第a个字母替换，大写字母用其前面的第b个字母替换，
+ * 可将字母表看成是首尾相接的。
+ * 解密过程是加密过程的逆过程，请编程实现这个过程，其中加密和解密过程分别用函数encode()和decode()实现。
+ * （要求函数参数采用指针变量实现，main()函数中键盘输入明文和2个密钥，
+ * 然后调用encode()和decode()函数分别输出加密后的密文及再将其解密后的文本。）
+ */
+char *encode(const char *str, int a, int b) {
+    int len = strlen(str);
+    char *result = (char *) malloc(sizeof(char) * len);
+    for (int i = 0; i < len; ++i) {
+        if ('a' <= str[i] && str[i] <= 'z') {
+            result[i] = (str[i] - 'a' + a) % 26 + 'a';
+        } else if ('A' <= str[i] && str[i] <= 'Z') {
+            result[i] = (str[i] - 'A' + b) % 26 + 'A';
+        } else {
+            result[i] = str[i];
+        }
+    }
+    return result;
+}
+
+char *decode(const char *str, int a, int b) {
+    int len = strlen(str);
+    char *result = (char *) malloc(sizeof(char) * len);
+    for (int i = 0; i < len; ++i) {
+        if ('a' <= str[i] && str[i] <= 'z') {
+            result[i] = (str[i] - 'a' - a + 26) % 26 + 'a';
+        } else if ('A' <= str[i] && str[i] <= 'Z') {
+            result[i] = (str[i] - 'A' - b + 26) % 26 + 'A';
+        } else {
+            result[i] = str[i];
+        }
+    }
+    return result;
 }
 
 
@@ -1130,9 +1200,10 @@ int main() {
     // findRepeatCharLocation("kygexrrwunuwxalgcbxistydvrxmfyhbzgfpjwtrsaszqkxqjrgchhybxuzlmccafsljlfdse");
     // specialMultiplication("123","45");
     // encodeStr("Hello! How are you!");
-    caesarDecode("NS BFW, JAJSYX TK NRUTWYFSHJ FWJ YMJ WJXZQY TK YWNANFQ HFZXJX");
-
-
+    // caesarDecode("NS BFW, JAJSYX TK NRUTWYFSHJ FWJ YMJ WJXZQY TK YWNANFQ HFZXJX");
+    // caesarEncode("IN WAR, EVENTS OF IMPORTANCE ARE THE RESULT OF TRIVIAL CAUSES");
+    puts(encode("abcxyzABCXYZ", 3, 4));
+    puts(decode("defabcEFGBCD", 3, 4));
 
     end = getTime();
     printf("\ntime spend:%f ms\n", (end - start));
