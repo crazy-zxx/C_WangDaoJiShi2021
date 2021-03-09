@@ -1123,31 +1123,31 @@ char *decode(const char *str, int a, int b) {
  * 例题 4.4、【题目】统计字符
  * 统计一个给定字符串中指定的字符出现的次数。
  */
-void calcCountChar(const char *str,char c){
-    int len=strlen(str);
-    int count=0;
+void calcCountChar(const char *str, char c) {
+    int len = strlen(str);
+    int count = 0;
     for (int i = 0; i < len; ++i) {
-        if (str[i]==c){
+        if (str[i] == c) {
             count++;
         }
     }
-    printf("%d\n",count);
+    printf("%d\n", count);
 }
 
 /*
  * 例题 4.5、【题目】字母统计
  * 输入一行字符串，计算其中A-Z大写字母出现的次数
  */
-void calcCountAlphabet(const char *str){
-    int len=strlen(str);
-    int num[26]={0};    //计数每个字母的次数
+void calcCountAlphabet(const char *str) {
+    int len = strlen(str);
+    int num[26] = {0};    //计数每个字母的次数
     for (int i = 0; i < len; ++i) {
-        if (isupper(str[i])){
-            num[str[i]-'A']++;  //hash映射思想
+        if (isupper(str[i])) {
+            num[str[i] - 'A']++;  //hash映射思想
         }
     }
     for (int i = 0; i < 26; ++i) {
-        printf("%c:%d\n",'A'+i,num[i]);
+        printf("%c:%d\n", 'A' + i, num[i]);
     }
 }
 
@@ -1158,13 +1158,13 @@ void calcCountAlphabet(const char *str){
  * 例如，10120(skew) = 1×(2^5-1) + 0×(2^4-1) + 1×(2^3-1) + 2×(2^2-1) + 0×(2^1-1) = 31 + 0 + 7 + 6 + 0 = 44。
  * 前十个 skew 数是 0、1、2、10、11、12、20、100、101、以及 102。
  */
-void calcSkew(const char *str){
-    int len=strlen(str);
-    int num=0;
+void calcSkew(const char *str) {
+    int len = strlen(str);
+    int num = 0;
     for (int i = 0; i < len; ++i) {
-        num+=(str[i]-'0')*((int)pow(2,len-i)-1);
+        num += (str[i] - '0') * ((int) pow(2, len - i) - 1);
     }
-    printf("%d\n",num);
+    printf("%d\n", num);
 }
 
 /*
@@ -1173,24 +1173,127 @@ void calcSkew(const char *str){
  * 该字符串由若干个单词组成，单词之间用一个空格隔开，所有单词区分大小写。
  * 现需要将其中的某个单词替换成另一个单词，并输出替换之后的字符串。
  */
-void replaceStr(char *str,const char *a,const char *b){
+void replaceStr(char *str, const char *a, const char *b) {
     // strtok() 函数的使用
-    char *token=strtok(str," ");        //首次使用，获得分割的第一块
-    while (token){
-        if(!strcmp(token,a)){
-            printf("%s",b);
-        } else{
-            printf("%s",token);
+    char *token = strtok(str, " ");        //首次使用，获得分割的第一块
+    while (token) {
+        if (!strcmp(token, a)) {
+            printf("%s", b);
+        } else {
+            printf("%s", token);
         }
-        token=strtok(NULL," ");     //继续获得分割的下一块
-        if (token){
+        token = strtok(NULL, " ");     //继续获得分割的下一块
+        if (token) {
             printf(" ");
         }
     }
     printf("\n");
 }
 
+/*
+ * 习题 4.3、【题目】首字母大写
+ * 对一个字符串中的所有单词，如果单词的首字母不是大写字母，则把单词的首字母变成大写字母。
+ * 在字符串中，单词之间通过空白符分隔，空白符包括：空格(' ')、制表符('\t')、回车符('\r')、换行符('\n')。
+ */
+void capitalizeFirst(char *str) {
 
+    int len = strlen(str);
+    for (int i = 0; i < len; ++i) {
+        if ((i == 0 || str[i - 1] == ' ' || str[i - 1] == '\t' || str[i - 1] == '\r' || str[i - 1] == '\n') &&
+            islower(str[i])) {
+            putchar(str[i] - 32);
+        } else {
+            putchar(str[i]);
+        }
+    }
+    printf("\n");
+}
+
+/**
+ * 翻转字符串数组
+ * @param str
+ */
+void reverseStr(char *str) {
+    int len = strlen(str);
+    for (int i = 0; i < len / 2; ++i) {
+        int temp = str[i];
+        str[i] = str[len - 1 - i];
+        str[len - 1 - i] = temp;
+    }
+}
+/*
+ * 习题 4.4、【题目】浮点数加法
+ * 求2个浮点数相加的和 题目中输入输出中出现浮点数都有如下的形式： P1P2...Pi.Q1Q2...Qj
+ * 对于整数部分，P1P2...Pi是一个非负整数 对于小数部分，Qj不等于0
+ */
+void addPositiveFloat(char *a, char *b) {
+    //计算字符串长度
+    int lenA = strlen(a);
+    int lenB = strlen(b);
+
+    //查找小数点位置
+    int localA = 0, localB = 0;
+    while (a[localA++] != '.' && localA <= lenA);
+    while (b[localB++] != '.' && localB <= lenB);
+
+    //求得最长小数位数，并将少的末尾补0与之对齐
+    int maxB=0;
+    if (lenA - localA > lenB - localB) {        //a小数位数多
+        maxB = lenA - localA;
+        for (int i = 0; i < maxB - (lenB - localB); ++i) {
+            b[lenB + i] = '0';
+        }
+    } else if (lenA - localA < lenB - localB) { //b小数位数多
+        maxB = lenB - localB;
+        for (int i = 0; i < maxB - (lenA - localA); ++i) {
+            a[lenA + i] = '0';
+        }
+    } else{
+        maxB=lenA - localA;
+    }
+
+    //翻转两个字符数组，以对齐小数点
+    reverseStr(a);
+    reverseStr(b);
+
+    //新的字符数组长度
+    lenA=localA+maxB;
+    lenB=localB+maxB;
+
+    //从最低位向前依次对位累加，注意进位
+    char result[1024] = {0};
+    int carry = 0;
+    int count = 0;
+    while (count < lenA && count < lenB) {
+        if (a[count] != '.') {
+            int temp = a[count] + b[count] - 2 * '0' + carry;
+            result[count] = temp % 10 + '0';
+            carry = temp / 10;
+        } else {
+            result[count] = '.';
+        }
+        count++;
+    }
+    while (count < lenA) {
+        result[count] = (a[count] - '0' + carry) % 10 + '0';
+        carry = (a[count] + b[count] - '0') / 10;
+        count++;
+    }
+    while (count < lenB) {
+        result[count] = (b[count] - '0' + carry) % 10 + '0';
+        carry = (a[count] + b[count] - '0') / 10;
+        count++;
+    }
+    if (carry) {
+        result[count++] = carry + '0';
+    }
+    result[count] = '\0';
+
+    //计算结果是逆序的，需要翻转数组
+    reverseStr(result);
+    puts(result);
+
+}
 
 
 //*******************************  *********************************
@@ -1285,8 +1388,16 @@ int main() {
     // calcCountChar("safadadafsdfs",'a');
     // calcCountAlphabet("fdGFGHDHJHJDSASFJKFHJKGHJVNVBXWAWTE");
     // calcSkew("010010112");
-    char s[]="azure C silver C orange blue AAAA azure silver red gold CCCCC orange CCCC orange gold III BBB azure CCCCCC";
-    replaceStr(s, "CCC", "sliver");
+    // char s[]="azure C silver C orange blue AAAA azure silver red gold CCCCC orange CCCC orange gold III BBB azure CCCCCC";
+    // replaceStr(s, "CCC", "sliver");
+    // char s[] = "kdudlkifgggjj8jlj0 ljogf\t9e4jkluogn8 3\t9b ufijeuoi0k0e3lgu0kf ef\tl0ijegnl jjug5g3njdif9j";
+    // capitalizeFirst(s);
+    // char a[] = "0.1";
+    // addFloat(a, a);
+    // char a[1024]={0},b[1024]={0};
+    // while(scanf("%s%s",a,b)==2){
+    //     addPositiveFloat(a,b);
+    // }
 
 
 
