@@ -1248,7 +1248,7 @@ void addPositiveFloat(char *a, char *b) {
         for (int i = 0; i < maxB - (lenA - localA); ++i) {
             a[lenA + i] = '0';
         }
-    } else{
+    } else{                                     //小数位数一样多
         maxB=lenA - localA;
     }
 
@@ -1260,7 +1260,7 @@ void addPositiveFloat(char *a, char *b) {
     lenA=localA+maxB;
     lenB=localB+maxB;
 
-    //从最低位向前依次对位累加，注意进位
+    //从最低位向最高位依次对位累加，注意进位
     char result[1024] = {0};
     int carry = 0;
     int count = 0;
@@ -1292,8 +1292,53 @@ void addPositiveFloat(char *a, char *b) {
     //计算结果是逆序的，需要翻转数组
     reverseStr(result);
     puts(result);
-
 }
+
+
+bool compareSuffixStr(char a[],char b[]){
+    if (strcmp(a,b)<0){
+        return true;
+    } else{
+        return false;
+    }
+}
+/*
+ * 习题 4.5、【题目】后缀子串排序
+ * 对于一个字符串，将其后缀子串进行排序。
+ * 例如grain 其子串有： grain rain ain in n
+ * 然后对各子串按字典顺序排序，即：ain,grain,in,n,rain
+ */
+void sortSuffixStr(const char *str){
+    int len=strlen(str);
+    char result[len][len+1];
+    memset(result,0,sizeof(char)*len*(len+1));
+
+    for (int i = 0; i < len; ++i) {
+        strcpy(result[i],str+i);
+    }
+
+    bool flag;
+    for (int i = 0; i < len-1; ++i) {
+        flag= true;
+        for (int j = 0; j < len-1-i; ++j) {
+            if (strcmp(result[j],result[j+1])>0){
+                char temp[len+1];
+                strcpy(temp,result[j]);
+                strcpy(result[j],result[j+1]);
+                strcpy(result[j+1],temp);
+                flag= false;
+            }
+        }
+        if (flag){
+            break;
+        }
+    }
+
+    for (int i = 0; i < len; ++i) {
+        puts(result[i]);
+    }
+}
+
 
 
 //*******************************  *********************************
@@ -1398,7 +1443,7 @@ int main() {
     // while(scanf("%s%s",a,b)==2){
     //     addPositiveFloat(a,b);
     // }
-
+    sortSuffixStr("grain");
 
 
 
