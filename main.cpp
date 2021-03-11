@@ -1442,14 +1442,12 @@ void indexAllKMP(const char *source, const char *target, int pos,int index[]){
 
     int i = 0, j = 0,count=0;
     while (i <lenS) {
-
         if (j == -1 || source[i] == target[j]) {
             i++;
             j++;
         } else {
             j = next[j];
         }
-
         //匹配完成一次，记录下标，并回溯模式串
         if (j == lenT) {
             index[count++]= i - lenT;
