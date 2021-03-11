@@ -1391,6 +1391,33 @@ void getNext(const char *target, int next[]) {
 }
 
 /**
+ * KMP的改进版nextval数组，即求[0,n-2]的最大公共前后缀长度
+ * @param target 模式串
+ * @param nextval 回溯数组
+ */
+void getNextval(const char *target, int nextval[]){
+    nextval[0] = -1;
+    int i = 0, j = -1;
+
+    int len = strlen(target);
+    while (i < len) {
+        if (j == -1 || target[i] == target[j]) {    //能匹配，则同步后移继续匹配
+            i++;
+            j++;
+            //优化，处理不必要的比较
+            if (target[i] != target[j]){
+                nextval[i] = j;
+            } else{
+                nextval[i]=nextval[j];
+            }
+
+        } else {    //不匹配，则需要回溯，然后继续匹配
+            j = nextval[j];
+        }
+    }
+}
+
+/**
  * KMP算法
  * @param source 主串
  * @param target 模式串
@@ -1401,7 +1428,8 @@ int indexKMP(const char *source, const char *target, int pos) {
     int lenS = strlen(source), lenT = strlen(target);
 
     int next[lenT];
-    getNext(target, next);
+    //getNext(target, next);
+    getNextval(target,next);
 
     int i = 0, j = 0;
     while (i < lenS && j < lenT) {
@@ -1438,7 +1466,8 @@ void indexAllKMP(const char *source, const char *target, int pos,int index[]){
     memset(index,-1, sizeof(int)*lenS);
 
     int next[lenT];
-    getNext(target, next);
+    //getNext(target, next);
+    getNextval(target,next);
 
     int i = 0, j = 0,count=0;
     while (i <lenS) {
@@ -1555,16 +1584,16 @@ int main() {
     //     addPositiveFloat(a,b);
     // }
     // sortSuffixStr("grain");
-    // printf("%s in %s index:%d\n", "ab", "aaaaabb", index("aaaaabb", "ab", 0));
-    // printf("%s in %s index:%d\n", "ab", "aaaaabb", indexKMP("aaaaabb", "ab", 0));
-    // int indexs[1024];
-    // indexAllKMP("aabbabababba","abba",0,indexs);
-    // for (int i = 0; i < 1024; ++i) {
-    //     printf("%d ",indexs[i]);
-    //     if (indexs[i+1]==-1){
-    //         break;
-    //     }
-    // }
+    printf("%s in %s index:%d\n", "ab", "aaaaabb", index("aaaaabb", "ab", 0));
+    printf("%s in %s index:%d\n", "ab", "aaaaabb", indexKMP("aaaaabb", "ab", 0));
+    int indexs[1024];
+    indexAllKMP("aabbabababba","abba",0,indexs);
+    for (int i = 0; i < 1024; ++i) {
+        printf("%d ",indexs[i]);
+        if (indexs[i+1]==-1){
+            break;
+        }
+    }
 
 
 
