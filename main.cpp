@@ -1294,14 +1294,6 @@ void addPositiveFloat(char *a, char *b) {
     puts(result);
 }
 
-
-bool compareSuffixStr(char a[],char b[]){
-    if (strcmp(a,b)<0){
-        return true;
-    } else{
-        return false;
-    }
-}
 /*
  * 习题 4.5、【题目】后缀子串排序
  * 对于一个字符串，将其后缀子串进行排序。
