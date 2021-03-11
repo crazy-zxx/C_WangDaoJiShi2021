@@ -1342,45 +1342,124 @@ void sortSuffixStr(const char *str) {
 */
 /**
  * 朴素的模式匹配算法
- * @param source 源串
- * @param target 目标串
+ * @param source 主串
+ * @param target 模式串
  * @param pos 起始查找下标
  * @return 首次匹配下标
  */
 int index(const char *source, const char *target, int pos) {
     int i = pos, j = 0;
-    int lenS=strlen(source),lenT=strlen(target);
+    int lenS = strlen(source), lenT = strlen(target);
 
-    while (i<lenS && j<lenT){
-        if (source[i]==target[j]){  //匹配，继续
+    while (i < lenS && j < lenT) {
+        if (source[i] == target[j]) {  //匹配，继续
             i++;
             j++;
-        } else{                     //不匹配，回退
-            i=i-j+1;
-            j=0;
+        } else {                     //不匹配，回退
+            i = i - j + 1;
+            j = 0;
         }
     }
 
-    if (j==lenT){           //目标串匹配完成
-        return i-lenT;
-    } else{                 //目标串未匹配完
+    if (j == lenT) {           //目标串匹配完成
+        return i - lenT;
+    } else {                 //目标串未匹配完
+        return -1;
+    }
+}
+
+/**
+ * KMP的next数组，即求[0,n-2]的最大公共前后缀长度
+ * @param target 模式串
+ * @param next 回溯数组
+ */
+void getNext(const char *target, int next[]) {
+
+    next[0] = -1;
+    int i = 0, j = -1;
+
+    int len = strlen(target);
+    while (i < len) {
+        if (j == -1 || target[i] == target[j]) {    //能匹配，则同步后移继续匹配
+            i++;
+            j++;
+            next[i] = j;
+        } else {    //不匹配，则需要回溯，然后继续匹配
+            j = next[j];
+        }
+    }
+}
+
+/**
+ * KMP算法
+ * @param source 主串
+ * @param target 模式串
+ * @param pos 起始匹配下标
+ * @return 首次匹配下标
+ */
+int indexKMP(const char *source, const char *target, int pos) {
+    int lenS = strlen(source), lenT = strlen(target);
+
+    int next[lenT];
+    getNext(target, next);
+
+    int i = 0, j = 0;
+    while (i < lenS && j < lenT) {
+        if (j == -1 || source[i] == target[j]) {
+            i++;
+            j++;
+        } else {
+            j = next[j];
+        }
+    }
+
+    if (j == lenT) {
+        return i - lenT;
+    } else {
         return -1;
     }
 }
 
 
-void getNext(const char *target,int next[]){
+/*
+ * 例题 4.7、【题目】Oulipo
+ * 给你一个文本串，一个模式串，文本串中有多少个子串与模式串完全匹配。
+*/
+/**
+ * KMP在主串中查找所有模式串匹配位置
+ * @param source 主串
+ * @param target 模式串
+ * @param pos 起始匹配下标
+ * @param index 所有模式串匹配位置数组
+ */
+void indexAllKMP(const char *source, const char *target, int pos,int index[]){
+    int lenS = strlen(source), lenT = strlen(target);
 
-}
-
-int indexKMP(const char *source,const char *target,int pos){
-    int lenS=strlen(source),lenT=strlen(target);
+    memset(index,-1, sizeof(int)*lenS);
 
     int next[lenT];
-    getNext(target,next);
+    getNext(target, next);
 
+    int i = 0, j = 0,count=0;
+    while (i <lenS) {
 
+        if (j == -1 || source[i] == target[j]) {
+            i++;
+            j++;
+        } else {
+            j = next[j];
+        }
+
+        //匹配完成一次，记录下标，并回溯模式串
+        if (j == lenT) {
+            index[count++]= i - lenT;
+            j=0;
+        }
+    }
 }
+
+
+
 
 
 
@@ -1478,7 +1557,19 @@ int main() {
     //     addPositiveFloat(a,b);
     // }
     // sortSuffixStr("grain");
-    printf("%s in %s index:%d\n","ab","aaaaabb",index("aaaaabb","ab",0));
+    // printf("%s in %s index:%d\n", "ab", "aaaaabb", index("aaaaabb", "ab", 0));
+    // printf("%s in %s index:%d\n", "ab", "aaaaabb", indexKMP("aaaaabb", "ab", 0));
+    // int indexs[1024];
+    // indexAllKMP("aabbabababba","abba",0,indexs);
+    // for (int i = 0; i < 1024; ++i) {
+    //     printf("%d ",indexs[i]);
+    //     if (indexs[i+1]==-1){
+    //         break;
+    //     }
+    // }
+
+
+
 
 
     end = getTime();
