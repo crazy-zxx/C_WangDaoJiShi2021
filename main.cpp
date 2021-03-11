@@ -1221,6 +1221,7 @@ void reverseStr(char *str) {
         str[len - 1 - i] = temp;
     }
 }
+
 /*
  * 习题 4.4、【题目】浮点数加法
  * 求2个浮点数相加的和 题目中输入输出中出现浮点数都有如下的形式： P1P2...Pi.Q1Q2...Qj
@@ -1237,7 +1238,7 @@ void addPositiveFloat(char *a, char *b) {
     while (b[localB++] != '.' && localB <= lenB);
 
     //求得最长小数位数，并将少的末尾补0与之对齐
-    int maxB=0;
+    int maxB = 0;
     if (lenA - localA > lenB - localB) {        //a小数位数多
         maxB = lenA - localA;
         for (int i = 0; i < maxB - (lenB - localB); ++i) {
@@ -1248,8 +1249,8 @@ void addPositiveFloat(char *a, char *b) {
         for (int i = 0; i < maxB - (lenA - localA); ++i) {
             a[lenA + i] = '0';
         }
-    } else{                                     //小数位数一样多
-        maxB=lenA - localA;
+    } else {                                     //小数位数一样多
+        maxB = lenA - localA;
     }
 
     //翻转两个字符数组，以对齐小数点
@@ -1257,8 +1258,8 @@ void addPositiveFloat(char *a, char *b) {
     reverseStr(b);
 
     //新的字符数组长度
-    lenA=localA+maxB;
-    lenB=localB+maxB;
+    lenA = localA + maxB;
+    lenB = localB + maxB;
 
     //从最低位向最高位依次对位累加，注意进位
     char result[1024] = {0};
@@ -1300,28 +1301,28 @@ void addPositiveFloat(char *a, char *b) {
  * 例如grain 其子串有： grain rain ain in n
  * 然后对各子串按字典顺序排序，即：ain,grain,in,n,rain
  */
-void sortSuffixStr(const char *str){
-    int len=strlen(str);
-    char result[len][len+1];
-    memset(result,0,sizeof(char)*len*(len+1));
+void sortSuffixStr(const char *str) {
+    int len = strlen(str);
+    char result[len][len + 1];
+    memset(result, 0, sizeof(char) * len * (len + 1));
 
     for (int i = 0; i < len; ++i) {
-        strcpy(result[i],str+i);
+        strcpy(result[i], str + i);
     }
 
     bool flag;
-    for (int i = 0; i < len-1; ++i) {
-        flag= true;
-        for (int j = 0; j < len-1-i; ++j) {
-            if (strcmp(result[j],result[j+1])>0){
-                char temp[len+1];
-                strcpy(temp,result[j]);
-                strcpy(result[j],result[j+1]);
-                strcpy(result[j+1],temp);
-                flag= false;
+    for (int i = 0; i < len - 1; ++i) {
+        flag = true;
+        for (int j = 0; j < len - 1 - i; ++j) {
+            if (strcmp(result[j], result[j + 1]) > 0) {
+                char temp[len + 1];
+                strcpy(temp, result[j]);
+                strcpy(result[j], result[j + 1]);
+                strcpy(result[j + 1], temp);
+                flag = false;
             }
         }
-        if (flag){
+        if (flag) {
             break;
         }
     }
@@ -1339,6 +1340,47 @@ void sortSuffixStr(const char *str){
  * 例题 4.6、【题目】Number Sequence
  * 给你两个数字序列，在序列a中找到和序列b完全匹配的子串，如果有多个匹配的位置，输出最小的那个。
 */
+/**
+ * 朴素的模式匹配算法
+ * @param source 源串
+ * @param target 目标串
+ * @param pos 起始查找下标
+ * @return 首次匹配下标
+ */
+int index(const char *source, const char *target, int pos) {
+    int i = pos, j = 0;
+    int lenS=strlen(source),lenT=strlen(target);
+
+    while (i<lenS && j<lenT){
+        if (source[i]==target[j]){  //匹配，继续
+            i++;
+            j++;
+        } else{                     //不匹配，回退
+            i=i-j+1;
+            j=0;
+        }
+    }
+
+    if (j==lenT){           //目标串匹配完成
+        return i-lenT;
+    } else{                 //目标串未匹配完
+        return -1;
+    }
+}
+
+
+void getNext(const char *target,int next[]){
+
+}
+
+int indexKMP(const char *source,const char *target,int pos){
+    int lenS=strlen(source),lenT=strlen(target);
+
+    int next[lenT];
+    getNext(target,next);
+
+
+}
 
 
 
@@ -1435,8 +1477,8 @@ int main() {
     // while(scanf("%s%s",a,b)==2){
     //     addPositiveFloat(a,b);
     // }
-    sortSuffixStr("grain");
-
+    // sortSuffixStr("grain");
+    printf("%s in %s index:%d\n","ab","aaaaabb",index("aaaaabb","ab",0));
 
 
     end = getTime();
