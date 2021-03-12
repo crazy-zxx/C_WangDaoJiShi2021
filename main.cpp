@@ -1633,34 +1633,37 @@ void matchBrackets(const char *str) {
     for (int i = 0; i < len; ++i) {
         if (str[i] == '(') {    //左括号
             s.push(i);
-            v[i]=' ';
+            v[i] = ' ';
         } else if (str[i] == ')') { //右括号
             if (s.empty()) {    //右括号失配
-                v[i]='?';
+                v[i] = '?';
             } else {            //右括号匹配
                 s.pop();
-                v[i]=' ';
+                v[i] = ' ';
             }
         } else {                //其他字符
-            v[i]=' ';
+            v[i] = ' ';
         }
     }
     while (!s.empty()) {    //剩余左括号未匹配完，左括号失配
-        v[s.top()]='$';
+        v[s.top()] = '$';
         s.pop();
     }
 
     for (int i = 0; i < len; ++i) { //输出结果
-        printf("%c",v[i]);
+        printf("%c", v[i]);
     }
     printf("\n");
 }
 
-
 /*
- * 例题 5.6、【题目】猫狗收容所
+ * 例题 5.6、【题目】简单计算器
+ * 读入一个只包含 +、-、*、/ 的 非负整数 计算表达式，计算该表达式的值。
  */
+void calcSimple(const char *express) {
 
+
+}
 
 
 int main() {
