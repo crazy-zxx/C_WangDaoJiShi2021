@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm>
+#include <vector>
 
 #include "tools.h"
 
@@ -1460,7 +1461,7 @@ int indexKMP(const char *source, const char *target, int pos) {
  * @param pos 起始匹配下标
  * @param index 所有模式串匹配位置数组
  */
-void indexAllKMP(const char *source, const char *target, int pos, int index[],int &count) {
+void indexAllKMP(const char *source, const char *target, int pos, int index[], int &count) {
     int lenS = strlen(source), lenT = strlen(target);
 
     memset(index, -1, sizeof(int) * lenS);
@@ -1510,38 +1511,36 @@ void indexAllKMP(const char *source, const char *target, int pos, int index[],in
  * 求出2 到60 之间所有“完数”和“盈数”，并以如下形式输出：
  * E: e1 e2 e3 ......(ei 为完数) G: g1 g2 g3 ......(gi 为盈数)
  */
-void completionSurplus(){
-    int sum,result[2][60],count1=0,count2=0;
-    for(int i=2;i<=60;++i){
-        sum=0;
-        for(int j=1;j<i;++j){
-            if(i%j==0){
-                sum+=j;
+void completionSurplus() {
+
+    std::vector<int> num[2];
+    int sum;
+    for (int i = 2; i <= 60; ++i) {
+        sum = 0;
+        for (int j = 1; j < i; ++j) {
+            if (i % j == 0) {
+                sum += j;
             }
         }
-        if(sum==i){
-            result[0][count1++]=i;
-        }else if(sum>i){
-            result[1][count2++]=i;
+        if (sum == i) {
+            num[0].push_back(i);
+        } else if (sum > i) {
+            num[1].push_back(i);
         }
     }
     printf("E: ");
-    for(int i=0;i<count1;++i){
-        printf("%d",result[0][i]);
+    for (auto i = num[0].begin(); i != num[0].end(); ++i) {
+        printf("%d", *i);
         printf(" ");
     }
     printf("G: ");
-    for(int i=0;i<count2;++i){
-        printf("%d",result[1][i]);
-        if(i+1!=count2){
+    for (auto i = num[1].begin(); i != num[1].end(); ++i) {
+        printf("%d", *i);
+        if (i + 1 != num[1].end()) {
             printf(" ");
         }
     }
 }
-
-
-
-
 
 
 int main() {
@@ -1646,10 +1645,7 @@ int main() {
     // for (int i = 0; i < count; ++i) {
     //     printf("%d ", indexs[i]);
     // }
-    // completionSurplus();
-
-
-
+    completionSurplus();
 
 
     end = getTime();
