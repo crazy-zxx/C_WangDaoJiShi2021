@@ -1395,7 +1395,7 @@ void getNext(const char *target, int next[]) {
  * @param target 模式串
  * @param nextval 回溯数组
  */
-void getNextval(const char *target, int nextval[]){
+void getNextval(const char *target, int nextval[]) {
     nextval[0] = -1;
     int i = 0, j = -1;
 
@@ -1405,10 +1405,10 @@ void getNextval(const char *target, int nextval[]){
             i++;
             j++;
             //优化，处理不必要的比较
-            if (target[i] != target[j]){
+            if (target[i] != target[j]) {
                 nextval[i] = j;
-            } else{
-                nextval[i]=nextval[j];
+            } else {
+                nextval[i] = nextval[j];
             }
 
         } else {    //不匹配，则需要回溯，然后继续匹配
@@ -1429,7 +1429,7 @@ int indexKMP(const char *source, const char *target, int pos) {
 
     int next[lenT];
     //getNext(target, next);
-    getNextval(target,next);
+    getNextval(target, next);
 
     int i = 0, j = 0;
     while (i < lenS && j < lenT) {
@@ -1460,17 +1460,18 @@ int indexKMP(const char *source, const char *target, int pos) {
  * @param pos 起始匹配下标
  * @param index 所有模式串匹配位置数组
  */
-void indexAllKMP(const char *source, const char *target, int pos,int index[]){
+void indexAllKMP(const char *source, const char *target, int pos, int index[],int &count) {
     int lenS = strlen(source), lenT = strlen(target);
 
-    memset(index,-1, sizeof(int)*lenS);
+    memset(index, -1, sizeof(int) * lenS);
+    count = 0;
 
     int next[lenT];
     //getNext(target, next);
-    getNextval(target,next);
+    getNextval(target, next);
 
-    int i = 0, j = 0,count=0;
-    while (i <lenS) {
+    int i = 0, j = 0;
+    while (i < lenS) {
         if (j == -1 || source[i] == target[j]) {
             i++;
             j++;
@@ -1479,14 +1480,36 @@ void indexAllKMP(const char *source, const char *target, int pos,int index[]){
         }
         //匹配完成一次，记录下标，并回溯模式串
         if (j == lenT) {
-            index[count++]= i - lenT;
-            j=0;
+            index[count++] = i - lenT;
+            j = next[j];
         }
     }
 }
 
+/*
+ * 习题 4.6、【题目】字符串匹配
+ * 读入数据string[ ]，然后读入一个短字符串。
+ * 要求查找string[ ]中和短字符串的所有匹配，输出行号、匹配字符串。
+ * 匹配时不区分大小写，并且可以有一个用中括号表示的模式匹配。
+ * 如“aa[123]bb”，就是说aa1bb、aa2bb、aa3bb都算匹配。
+*/
 
 
+/*
+ * 习题 4.7、【题目】String Matching
+ * 同例题4.7
+*/
+
+
+// ***************************** 数据结构 *****************************
+
+/*
+ * 例题 4.7、【题目】完数与盈数
+ * 一个数如果恰好等于它的各因子（该数本身除外）子和，
+ * 如：6=3+2+1，则称其为“完数”；若因子之和大于该数，则称其为“盈数”。
+ * 求出2 到60 之间所有“完数”和“盈数”，并以如下形式输出：
+ * E: e1 e2 e3 ......(ei 为完数) G: g1 g2 g3 ......(gi 为盈数)
+ */
 
 
 
@@ -1584,18 +1607,14 @@ int main() {
     //     addPositiveFloat(a,b);
     // }
     // sortSuffixStr("grain");
-    printf("%s in %s index:%d\n", "ab", "aaaaabb", index("aaaaabb", "ab", 0));
-    printf("%s in %s index:%d\n", "ab", "aaaaabb", indexKMP("aaaaabb", "ab", 0));
-    int indexs[1024];
-    indexAllKMP("aabbabababba","abba",0,indexs);
-    for (int i = 0; i < 1024; ++i) {
-        printf("%d ",indexs[i]);
-        if (indexs[i+1]==-1){
-            break;
-        }
+    // printf("%s in %s index:%d\n", "ab", "aaaaabb", index("aaaaabb", "ab", 0));
+    // printf("%s in %s index:%d\n", "ab", "aaaaabb", indexKMP("aaaaabb", "ab", 0));
+    int indexs[1024],count=0;
+    indexAllKMP("abababab", "abab", 0, indexs,count);
+    printf("%d : ", count);
+    for (int i = 0; i < count; ++i) {
+        printf("%d ", indexs[i]);
     }
-
-
 
 
 
