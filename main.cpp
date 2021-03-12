@@ -2,12 +2,14 @@
 // Created by xylx on 2021/2/22.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <iostream>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <algorithm>
 #include <vector>
 #include <queue>
+#include <stack>
 
 #include "tools.h"
 
@@ -1341,7 +1343,7 @@ void sortSuffixStr(const char *str) {
 /*
  * 例题 4.6、【题目】Number Sequence
  * 给你两个数字序列，在序列a中找到和序列b完全匹配的子串，如果有多个匹配的位置，输出最小的那个。
-*/
+ */
 /**
  * 朴素的模式匹配算法
  * @param source 主串
@@ -1454,7 +1456,7 @@ int indexKMP(const char *source, const char *target, int pos) {
 /*
  * 例题 4.7、【题目】Oulipo
  * 给你一个文本串，一个模式串，文本串中有多少个子串与模式串完全匹配。
-*/
+ */
 /**
  * KMP在主串中查找所有模式串匹配位置
  * @param source 主串
@@ -1494,13 +1496,13 @@ void indexAllKMP(const char *source, const char *target, int pos, int index[], i
  * 要求查找string[ ]中和短字符串的所有匹配，输出行号、匹配字符串。
  * 匹配时不区分大小写，并且可以有一个用中括号表示的模式匹配。
  * 如“aa[123]bb”，就是说aa1bb、aa2bb、aa3bb都算匹配。
-*/
+ */
 
 
 /*
  * 习题 4.7、【题目】String Matching
  * 同例题4.7
-*/
+ */
 
 
 // ***************************** 数据结构 *****************************
@@ -1586,6 +1588,79 @@ void josephRing(int n, int p, int m) {
         }
     }
 }
+
+/*
+ * 例题 5.3、【题目】猫狗收容所
+ * 略
+ */
+
+/*
+ * 例题 5.4、【题目】Zero-complexity Transposition
+ * 给你一个整数序列，序列的零复杂性换位是将序列反转。
+ * 你的任务是写一个程序,对这个序列进行零复杂性换位。
+ */
+void reversePrint() {
+    int n;
+    while (scanf("%d", &n) == 1) {
+        std::stack<long long> s;
+        while (n-- > 0) {
+            long long num;
+            scanf("%lld", &num);
+            s.push(num);
+        }
+        while (!s.empty()) {
+            printf("%lld ", s.top());
+            s.pop();
+        }
+        printf("\n");
+    }
+}
+
+/*
+ * 例题 5.5、【题目】括号匹配问题
+ * 在某个字符串(长度不超过100)中有左括号、右括号和大小写字母;
+ * 规定(与常见的算数式子一样)任何一个左括号都从内到外与在它右边且距离最近的右括号匹配。
+ * 写一个程序，找到无法匹配的左括号和右括号，输出原来的字符串，并在下一行标出不能匹配的括号。
+ * 不能匹配的左括号用”$"标注，不能匹配的右括号用”?"标注。
+ */
+void matchBrackets(const char *str) {
+    puts(str);
+
+    int len = strlen(str);
+    std::stack<int> s;          //保存左括号下标
+    std::vector<char> v(len);   //保存对应下标匹配后该输出的字符
+
+    for (int i = 0; i < len; ++i) {
+        if (str[i] == '(') {    //左括号
+            s.push(i);
+            v[i]=' ';
+        } else if (str[i] == ')') { //右括号
+            if (s.empty()) {    //右括号失配
+                v[i]='?';
+            } else {            //右括号匹配
+                s.pop();
+                v[i]=' ';
+            }
+        } else {                //其他字符
+            v[i]=' ';
+        }
+    }
+    while (!s.empty()) {    //剩余左括号未匹配完，左括号失配
+        v[s.top()]='$';
+        s.pop();
+    }
+
+    for (int i = 0; i < len; ++i) { //输出结果
+        printf("%c",v[i]);
+    }
+    printf("\n");
+}
+
+
+/*
+ * 例题 5.6、【题目】猫狗收容所
+ */
+
 
 
 int main() {
@@ -1691,7 +1766,10 @@ int main() {
     //     printf("%d ", indexs[i]);
     // }
     // completionSurplus();
-    josephRing(8, 3, 4);
+    // josephRing(8, 3, 4);
+    // reversePrint();
+    matchBrackets(")(rttyy(0)))()sss)((()");
+
 
     end = getTime();
     printf("\n\ntime spend:%f ms", (end - start));
