@@ -7,6 +7,7 @@
 #include <string.h>
 #include <algorithm>
 #include <vector>
+#include <queue>
 
 #include "tools.h"
 
@@ -1505,7 +1506,7 @@ void indexAllKMP(const char *source, const char *target, int pos, int index[], i
 // ***************************** 数据结构 *****************************
 
 /*
- * 例题 4.7、【题目】完数与盈数
+ * 例题 5.1、【题目】完数与盈数
  * 一个数如果恰好等于它的各因子（该数本身除外）子和，
  * 如：6=3+2+1，则称其为“完数”；若因子之和大于该数，则称其为“盈数”。
  * 求出2 到60 之间所有“完数”和“盈数”，并以如下形式输出：
@@ -1513,6 +1514,7 @@ void indexAllKMP(const char *source, const char *target, int pos, int index[], i
  */
 void completionSurplus() {
 
+    //vector使用
     std::vector<int> num[2];
     int sum;
     for (int i = 2; i <= 60; ++i) {
@@ -1538,6 +1540,49 @@ void completionSurplus() {
         printf("%d", *i);
         if (i + 1 != num[1].end()) {
             printf(" ");
+        }
+    }
+}
+
+/*
+ * 例题 5.2、【题目】约瑟夫环问题
+ * n个小孩围坐成一圈，并按顺时针编号为1，2，…，n，从编号为 p 的小孩顺时针依次报数，
+ * 由 1 报到 m ，报到 m 时，这名小孩从圈中出去;然后下一名小孩再从 1 报数，报到 m 时再出去。
+ * 以此类推，直到所有小孩都从圈中出去。
+ * 请按出去的先后顺序输出小孩的编号。
+ */
+void josephRing(int n, int p, int m) {
+    int result[n], count = 0;
+
+    //queue队列
+    std::queue<int> q;
+    //初始化p开始
+    for (int i = p; i <= n; ++i) {
+        q.push(i);
+    }
+    for (int i = 1; i < p; ++i) {
+        q.push(i);
+    }
+
+    int num = 0;    //报数值
+    while (!q.empty()) {
+        num++;
+        int temp = q.front();
+        q.pop();
+        if (num == m) { //滚出去，从头报
+            result[count++] = temp;
+            num = 0;
+        } else {        //排队尾
+            q.push(temp);
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        printf("%d", result[i]);
+        if (i != n - 1) {
+            printf(" ");
+        } else {
+            printf("\n");
         }
     }
 }
@@ -1645,8 +1690,8 @@ int main() {
     // for (int i = 0; i < count; ++i) {
     //     printf("%d ", indexs[i]);
     // }
-    completionSurplus();
-
+    // completionSurplus();
+    josephRing(8, 3, 4);
 
     end = getTime();
     printf("\n\ntime spend:%f ms", (end - start));
