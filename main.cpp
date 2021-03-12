@@ -1510,6 +1510,37 @@ void indexAllKMP(const char *source, const char *target, int pos, int index[],in
  * 求出2 到60 之间所有“完数”和“盈数”，并以如下形式输出：
  * E: e1 e2 e3 ......(ei 为完数) G: g1 g2 g3 ......(gi 为盈数)
  */
+void completionSurplus(){
+    int sum,result[2][60],count1=0,count2=0;
+    for(int i=2;i<=60;++i){
+        sum=0;
+        for(int j=1;j<i;++j){
+            if(i%j==0){
+                sum+=j;
+            }
+        }
+        if(sum==i){
+            result[0][count1++]=i;
+        }else if(sum>i){
+            result[1][count2++]=i;
+        }
+    }
+    printf("E: ");
+    for(int i=0;i<count1;++i){
+        printf("%d",result[0][i]);
+        printf(" ");
+    }
+    printf("G: ");
+    for(int i=0;i<count2;++i){
+        printf("%d",result[1][i]);
+        if(i+1!=count2){
+            printf(" ");
+        }
+    }
+}
+
+
+
 
 
 
@@ -1609,17 +1640,20 @@ int main() {
     // sortSuffixStr("grain");
     // printf("%s in %s index:%d\n", "ab", "aaaaabb", index("aaaaabb", "ab", 0));
     // printf("%s in %s index:%d\n", "ab", "aaaaabb", indexKMP("aaaaabb", "ab", 0));
-    int indexs[1024],count=0;
-    indexAllKMP("abababab", "abab", 0, indexs,count);
-    printf("%d : ", count);
-    for (int i = 0; i < count; ++i) {
-        printf("%d ", indexs[i]);
-    }
+    // int indexs[1024],count=0;
+    // indexAllKMP("abababab", "abab", 0, indexs,count);
+    // printf("%d : ", count);
+    // for (int i = 0; i < count; ++i) {
+    //     printf("%d ", indexs[i]);
+    // }
+    // completionSurplus();
+
+
 
 
 
     end = getTime();
-    printf("\ntime spend:%f ms\n", (end - start));
+    printf("\n\ntime spend:%f ms", (end - start));
 
     return 0;
 }
