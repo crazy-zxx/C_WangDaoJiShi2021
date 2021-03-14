@@ -1662,8 +1662,113 @@ void matchBrackets(const char *str) {
  */
 void calcSimple(const char *express) {
 
+    std::stack<char> op;        //运算符栈
+    std::stack<double> num;     //数值栈
+
+    int len = strlen(express);
+    for (int i = 0; i < len; ++i) {     //遍历表达式
+        if (isnumber(express[i])) {
+            double t = express[i] - '0';
+            while (isnumber(express[++i])) {
+                t = t * 10 + (express[i] - '0');
+            }
+            num.push(t);
+        } else if (express[i] == '*' || express[i] == '/') {    //见乘除就运算
+
+            if(num.empty()){
+                printf("Error expression!");
+                return;
+            }
+
+            double a = num.top();
+            num.pop();
+
+            int l = i;
+            double b = 0;
+            i += 2;
+            while (isnumber(express[i])) {
+                b = b * 10 + (express[i++] - '0');
+            }
+
+            if (express[l] == '*') {
+                num.push(a * b);
+            } else {
+                num.push(a / b);
+            }
+
+        } else if (express[i] == '+' || express[i] == '-') {    //见加减，前不可能有乘除，因为见乘除就运算了
+            if (!op.empty() && (op.top() == '+' || op.top() == '-')) { //前边是加减，就计算前边
+
+                if(num.empty()){
+                    printf("Error expression!");
+                    return;
+                }
+                double b = num.top();
+                num.pop();
+
+                if(num.empty()){
+                    printf("Error expression!");
+                    return;
+                }
+                double a = num.top();
+                num.pop();
+
+                char opt = op.top();
+                op.pop();
+
+                if (opt == '+') {
+                    num.push(a + b);
+                } else {
+                    num.push(a - b);
+                }
+
+                i--;
+            } else {                                                    //前边没有，就压栈运算符
+                op.push(express[i]);
+            }
+        }
+    }
+
+    while (!op.empty()) {   //还有运算符剩余，只可能是加减运算符
+        if(num.empty()){
+            printf("Error expression!");
+            return;
+        }
+        double b = num.top();
+        num.pop();
+
+        if(num.empty()){
+            printf("Error expression!");
+            return;
+        }
+        double a = num.top();
+        num.pop();
+
+        char opt = op.top();
+        op.pop();
+
+        switch (opt) {
+            case '+':
+                num.push(a + b);
+                break;
+            case '-':
+                num.push(a - b);
+                break;
+        }
+    }
+
+    if(!num.empty() && num.size()==1){  //数值栈只剩一个数，表达式正确
+        printf("%f\n", num.top());
+    } else{                             //否则，表达式错误
+        printf("Error expression!\n");
+    }
 
 }
+
+
+
+
+
 
 
 int main() {
@@ -1771,7 +1876,13 @@ int main() {
     // completionSurplus();
     // josephRing(8, 3, 4);
     // reversePrint();
-    matchBrackets(")(rttyy(0)))()sss)((()");
+    // matchBrackets(")(rttyy(0)))()sss)((()");
+    // calcSimple("1 + 2 - 1 * 3 / 2 + 10 / 2 * 1");
+    // calcSimple("100 + 2 + 1 * 3 / 2 + 10 / 2 * 1");
+    // calcSimple("1 / 2 - 1 * 3 / 2 + 10 / 2 * 1");
+    // calcSimple("1 / 2 / 1 * 3 / 2 * 10 / 2 * 1");
+    // calcSimple("1 + 2 - 1 - 3 + 2 + 10 + 2 - 1");
+    calcSimple("1 + 2 - 1 - 3 + 2 + 10 + 2 -");
 
 
     end = getTime();
