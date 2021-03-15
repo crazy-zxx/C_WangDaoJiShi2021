@@ -1667,15 +1667,15 @@ void calcSimple(const char *express) {
 
     int len = strlen(express);
     for (int i = 0; i < len; ++i) {     //遍历表达式
-        if (isnumber(express[i])) {
+        if (isdigit(express[i])) {
             double t = express[i] - '0';
-            while (isnumber(express[++i])) {
+            while (isdigit(express[++i])) {
                 t = t * 10 + (express[i] - '0');
             }
             num.push(t);
         } else if (express[i] == '*' || express[i] == '/') {    //见乘除就运算
 
-            if(num.empty()){
+            if (num.empty()) {
                 printf("Error expression!");
                 return;
             }
@@ -1686,7 +1686,7 @@ void calcSimple(const char *express) {
             int l = i;
             double b = 0;
             i += 2;
-            while (isnumber(express[i])) {
+            while (isdigit(express[i])) {
                 b = b * 10 + (express[i++] - '0');
             }
 
@@ -1699,14 +1699,14 @@ void calcSimple(const char *express) {
         } else if (express[i] == '+' || express[i] == '-') {    //见加减，前不可能有乘除，因为见乘除就运算了
             if (!op.empty() && (op.top() == '+' || op.top() == '-')) { //前边是加减，就计算前边
 
-                if(num.empty()){
+                if (num.empty()) {
                     printf("Error expression!");
                     return;
                 }
                 double b = num.top();
                 num.pop();
 
-                if(num.empty()){
+                if (num.empty()) {
                     printf("Error expression!");
                     return;
                 }
@@ -1730,14 +1730,14 @@ void calcSimple(const char *express) {
     }
 
     while (!op.empty()) {   //还有运算符剩余，只可能是加减运算符
-        if(num.empty()){
+        if (num.empty()) {
             printf("Error expression!");
             return;
         }
         double b = num.top();
         num.pop();
 
-        if(num.empty()){
+        if (num.empty()) {
             printf("Error expression!");
             return;
         }
@@ -1757,9 +1757,160 @@ void calcSimple(const char *express) {
         }
     }
 
-    if(!num.empty() && num.size()==1){  //数值栈只剩一个数，表达式正确
+    if (!num.empty() && num.size() == 1) {  //数值栈只剩一个数，表达式正确
         printf("%f\n", num.top());
-    } else{                             //否则，表达式错误
+    } else {                             //否则，表达式错误
+        printf("Error expression!\n");
+    }
+
+}
+
+/*
+ * 习题 5.1、【题目】堆栈的使用
+ * 对于每组测试数据，第一行是一个正整数 n，0<n<=10000(n=0 结束)。
+ * 而后的 n 行，每行的第一个字符可能是'P’或者'O’或者'A’；
+ * 如果是'P’，后面还会跟着一个整数，表示把这个数据压入堆栈；
+ * 如果是'O’，表示将栈顶的值 pop 出来，如果堆栈中没有元素时，忽略本次操作；
+ * 如果是'A’，表示询问当前栈顶的值，如果当时栈为空，则输出'E'。堆栈开始为空。
+ */
+void testStack() {
+
+    int n;
+    while (scanf("%d", &n) == 1 && n != 0) {
+        int s[n], top = -1;
+        for (int i = 0; i < n; ++i) {
+            char ch;
+            scanf(" %c", &ch);
+            switch (ch) {
+                case 'A':
+                    if (top != -1) {
+                        printf("%d\n", s[top]);
+                    } else {
+                        printf("E\n");
+                    }
+                    break;
+                case 'P':
+                    int t;
+                    scanf("%d", &t);
+                    s[++top] = t;
+                    break;
+                case 'O':
+                    if (top != -1) {
+                        top--;
+                    }
+                    break;
+            }
+        }
+        printf("\n");
+    }
+}
+
+/*
+ * 习题 5.2、【题目】计算表达式
+ * 对于一个不存在括号的表达式进行计算.
+ */
+void calcSimple2(const char *express) {
+
+    std::stack<char> op;        //运算符栈
+    std::stack<double> num;     //数值栈
+
+    int len = strlen(express);
+    for (int i = 0; i < len; ++i) {     //遍历表达式
+        if (isdigit(express[i])) {
+            double t = express[i] - '0';
+            while (isdigit(express[++i])) {
+                t = t * 10 + (express[i] - '0');
+            }
+            num.push(t);
+
+            i--;
+        } else if (express[i] == '*' || express[i] == '/') {    //见乘除就运算
+
+            if (num.empty()) {
+                printf("Error expression!");
+                return;
+            }
+
+            double a = num.top();
+            num.pop();
+
+            int l = i;
+            double b = 0;
+            while (isdigit(express[++i])) {
+                b = b * 10 + (express[i] - '0');
+            }
+
+            if (express[l] == '*') {
+                num.push(a * b);
+            } else {
+                num.push(a / b);
+            }
+
+            i--;
+        } else if (express[i] == '+' || express[i] == '-') {    //见加减，前不可能有乘除，因为见乘除就运算了
+            if (!op.empty() && (op.top() == '+' || op.top() == '-')) { //前边是加减，就计算前边
+
+                if (num.empty()) {
+                    printf("Error expression!");
+                    return;
+                }
+                double b = num.top();
+                num.pop();
+
+                if (num.empty()) {
+                    printf("Error expression!");
+                    return;
+                }
+                double a = num.top();
+                num.pop();
+
+                char opt = op.top();
+                op.pop();
+
+                if (opt == '+') {
+                    num.push(a + b);
+                } else {
+                    num.push(a - b);
+                }
+
+                i--;
+            } else {                                                    //前边没有，就压栈运算符
+                op.push(express[i]);
+            }
+        }
+    }
+
+    while (!op.empty()) {   //还有运算符剩余，只可能是加减运算符
+        if (num.empty()) {
+            printf("Error expression!");
+            return;
+        }
+        double b = num.top();
+        num.pop();
+
+        if (num.empty()) {
+            printf("Error expression!");
+            return;
+        }
+        double a = num.top();
+        num.pop();
+
+        char opt = op.top();
+        op.pop();
+
+        switch (opt) {
+            case '+':
+                num.push(a + b);
+                break;
+            case '-':
+                num.push(a - b);
+                break;
+        }
+    }
+
+    if (!num.empty() && num.size() == 1) {  //数值栈只剩一个数，表达式正确
+        printf("%.0f\n", num.top());
+    } else {                             //否则，表达式错误
         printf("Error expression!\n");
     }
 
@@ -1767,8 +1918,149 @@ void calcSimple(const char *express) {
 
 
 
+//******************************* 数学问题 *********************************
+
+/*
+ * 例题 6.1、【题目】二进制数
+ * 大家都知道，数据在计算机里中存储是以二进制的形式存储的。
+ * 有一天，小明学了C语言之后，他想知道一个类型为unsigned int 类型的数字，存储在计算机中的二进制串是什么样子的。
+ * 你能帮帮小明吗？并且，小明不想要二进制串中前面的没有意义的0串，即要去掉前导0。
+ */
+void UIntToBinPrint(unsigned int n) {
+
+    int res[16] = {0};
+    int i = 0;
+    while (n) {
+        res[i++] = n % 2;
+        n /= 2;
+    }
+    for (int j = i - 1; j >= 0; --j) {
+        printf("%d", res[j]);
+    }
+    printf("\n");
+}
 
 
+/**
+ * 无符号大整数除2并返回余数（模拟手算）
+ * @param num 原数值将被修改为除2后的数值
+ * @return 余数
+ */
+int bigUIntDivideModTwo(char *num) {
+    int len = strlen(num);
+    int m = num[0] - '0';       //余数，初始化为首字符对应数值，可以方便处理计算到最后时数值为1或0的情况
+    int sum = 0;                //模拟手算：被除数当前除2的部分
+    int j = 0;                  //每位商的下标
+
+    for (int i = 0; i < len; ++i) {
+        sum = sum * 10 + (num[i] - '0');    //累计被除数当前除2的部分
+
+        num[j++] = sum / 2 + '0';   //产生一位商
+        m = sum % 2;                //更新余数
+        sum = m;                    //更新被除数除2的部分
+        if (num[0] == '0') {    //数值最开始产生无用的商0，需要抹掉
+            j = 0;
+        }
+
+    }
+    num[j] = '\0';  //商值结束
+
+    return m;
+}
+
+/*
+ * 例题 6.2、【题目】进制转换
+ * 将一个长度最多为30位数字的十进制非负整数转换为二进制数输出。
+ */
+void UBigIntToBinPrint(char *num) {
+
+    int res[128] = {0};
+    int i = 0;
+
+    int len = strlen(num);
+    while (num[0]) {
+        res[i++] = bigUIntDivideModTwo(num);
+    }
+
+    for (int j = i - 1; j >= 0; --j) {
+        printf("%d", res[j]);
+    }
+    printf("\n");
+}
+
+
+/**
+ * 无符号大整数除base并返回余数
+ * @param num 原数值将被修改为除base后的数值
+ * @return 余数
+ */
+char bigUIntDivideModOther(char *num, int base) {
+    if (base >= 26) {
+        printf("Can't deal!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    int len = strlen(num);
+    int m = num[0] > '9' ? num[0] - 'a' + 10 : num[0] - '0';     //余数，初始化为首字符对应数值，可以方便处理计算到最后时数值<=base的情况
+    int sum = 0;            //模拟手算：被除数当前除2的部分
+    int j = 0;              //每位商的下标
+
+    for (int i = 0; i < len; ++i) {
+        sum = sum * 10 + (num[i] > '9' ? num[i] - 'a' + 10 : num[i] - '0');    //累计被除数当前计算部分
+
+        num[j++] = sum / base + '0';
+        m = sum % base;
+        sum = m;
+        if (num[0] == '0') {
+            j = 0;
+        }
+
+    }
+    num[j] = '\0';
+
+    return m > 9 ? m - 10 + 'a' : m + '0';
+}
+
+/*
+ * 扩展：将一个大的十进制非负整数转换为其他进制数输出。
+ */
+void UBigIntToOtherPrint(char *num, int base) {
+
+    char res[128] = {0};
+    int i = 0;
+
+    int len = strlen(num);
+    while (num[0]) {
+        res[i++] = bigUIntDivideModOther(num, base);
+    }
+
+    for (int j = i - 1; j >= 0; --j) {
+        printf("%c", res[j]);
+    }
+    printf("\n");
+}
+
+/*
+ * 例题 6.3、【题目】
+ *
+ */
+
+
+/*
+ * 例题 6.4、【题目】
+ *
+ */
+
+/*
+ * 例题 6.5、【题目】
+ *
+ */
+
+
+/*
+ * 例题 6.6、【题目】
+ *
+ */
 
 
 int main() {
@@ -1882,7 +2174,15 @@ int main() {
     // calcSimple("1 / 2 - 1 * 3 / 2 + 10 / 2 * 1");
     // calcSimple("1 / 2 / 1 * 3 / 2 * 10 / 2 * 1");
     // calcSimple("1 + 2 - 1 - 3 + 2 + 10 + 2 - 1");
-    calcSimple("1 + 2 - 1 - 3 + 2 + 10 + 2 -");
+    // calcSimple("1 + 2 - 1 - 3 + 2 + 10 + 2 -");
+    // testStack();
+    // calcSimple2("6/2+3+3*4");
+    // UIntToBinPrint(989835);
+    char num[] = "999999999999999999999999999999";
+    UBigIntToBinPrint(num);
+
+    char num1[] = "999999999999999999999999999999";
+    UBigIntToOtherPrint(num1, 2);
 
 
     end = getTime();
