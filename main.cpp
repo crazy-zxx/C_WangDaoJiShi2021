@@ -1948,16 +1948,15 @@ void UIntToBinPrint(unsigned int n) {
  */
 int bigUIntDivideModTwo(char *num) {
     int len = strlen(num);
-    int m = num[0] - '0';       //余数，初始化为首字符对应数值，可以方便处理计算到最后时数值为1或0的情况
+    int m = 0;       //余数，初始化为首字符对应数值，可以方便处理计算到最后时数值为1或0的情况
     int sum = 0;                //模拟手算：被除数当前除2的部分
     int j = 0;                  //每位商的下标
 
     for (int i = 0; i < len; ++i) {
-        sum = sum * 10 + (num[i] - '0');    //累计被除数当前除2的部分
+        sum = m * 10 + (num[i] - '0');    //被除数当前除2的部分
 
         num[j++] = sum / 2 + '0';   //产生一位商
         m = sum % 2;                //更新余数
-        sum = m;                    //更新被除数除2的部分
         if (num[0] == '0') {    //数值最开始产生无用的商0，需要抹掉
             j = 0;
         }
@@ -1973,11 +1972,10 @@ int bigUIntDivideModTwo(char *num) {
  * 将一个长度最多为30位数字的十进制非负整数转换为二进制数输出。
  */
 void UBigIntToBinPrint(char *num) {
-
-    int res[128] = {0};
+    int len = strlen(num);
+    int res[(int) log2(pow(10, len) - 1) + 2];
     int i = 0;
 
-    int len = strlen(num);
     while (num[0]) {
         res[i++] = bigUIntDivideModTwo(num);
     }
@@ -2001,16 +1999,15 @@ char bigUIntDivideModOther(char *num, int base) {
     }
 
     int len = strlen(num);
-    int m = num[0] > '9' ? num[0] - 'a' + 10 : num[0] - '0';     //余数，初始化为首字符对应数值，可以方便处理计算到最后时数值<=base的情况
+    int m = 0;              //余数
     int sum = 0;            //模拟手算：被除数当前除2的部分
     int j = 0;              //每位商的下标
 
     for (int i = 0; i < len; ++i) {
-        sum = sum * 10 + (num[i] > '9' ? num[i] - 'a' + 10 : num[i] - '0');    //累计被除数当前计算部分
+        sum = m * 10 + (num[i] > '9' ? num[i] - 'a' + 10 : num[i] - '0');    //累计被除数当前计算部分
 
         num[j++] = sum / base + '0';
         m = sum % base;
-        sum = m;
         if (num[0] == '0') {
             j = 0;
         }
@@ -2026,10 +2023,12 @@ char bigUIntDivideModOther(char *num, int base) {
  */
 void UBigIntToOtherPrint(char *num, int base) {
 
-    char res[128] = {0};
+    //十进制位数：n
+    //其他base进制位数至少：m= 「(int)(log2(pow(10,n)-1)/log2(base)) 向上取整
+    int len = strlen(num);
+    char res[(int) (log2(pow(10, len) - 1) / log2(base)) + 2];
     int i = 0;
 
-    int len = strlen(num);
     while (num[0]) {
         res[i++] = bigUIntDivideModOther(num, base);
     }
