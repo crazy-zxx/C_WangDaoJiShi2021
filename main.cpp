@@ -1971,7 +1971,7 @@ int bigUIntDivideModTwo(char *num) {
  * 例题 6.2、【题目】进制转换
  * 将一个长度最多为30位数字的十进制非负整数转换为二进制数输出。
  */
-void UBigIntToBinPrint(char *num) {
+void bigUIntToBinPrint(char *num) {
     int len = strlen(num);
     int res[(int) log2(pow(10, len) - 1) + 2];
     int i = 0;
@@ -2021,7 +2021,7 @@ char bigUIntDivideModOther(char *num, int base) {
 /*
  * 扩展：将一个大的十进制非负整数转换为其他进制数输出。
  */
-void UBigIntToOtherPrint(char *num, int base) {
+void bigUIntToOtherPrint(char *num, int base) {
 
     //十进制位数：n
     //其他base进制位数至少：m= 「(int)(log2(pow(10,n)-1)/log2(base)) 向上取整
@@ -2040,11 +2040,34 @@ void UBigIntToOtherPrint(char *num, int base) {
 }
 
 
+void bigUIntAdd(char res2[],int i){
+    //TODO
+}
 /*
- * 例题 6.3、【题目】
- *
+ * 例题 6.3、【题目】十进制与二进制
+ * 对于一个1000位以内的十进制正整数A,将A转换为二进制数，然后按位逆序排列，再转换为十进制数B, B即为A的二进制逆序数。
+ * 例如，对于十进制数173,其二进制形式为10101101，逆序排列得到10110101,其十进制数为181, 181即为173的二进制逆序数。
  */
+void decimalAndBin(char *num) {
 
+    //十进制位数：n
+    //其他base进制位数至少：m= 「(int)(log2(pow(10,n)-1)/log2(base)) 向上取整
+    int len = strlen(num);
+    bool res1[(int) log2(pow(10, len) - 1) + 2];
+    int i = 0;
+
+    while (num[0]) {
+        res1[i++] = bigUIntDivideModTwo(num);
+    }
+
+    char res2[(int) log10(pow(2, len) - 1) + 2];
+
+    for (int j = i-1; j >=0 ;--j) {
+        bigUIntAdd(res2,res1[j]);
+    }
+
+    puts(res2);
+}
 
 /*
  * 例题 6.4、【题目】
@@ -2178,11 +2201,12 @@ int main() {
     // testStack();
     // calcSimple2("6/2+3+3*4");
     // UIntToBinPrint(989835);
-    char num[] = "999999999999999999999999999999";
-    UBigIntToBinPrint(num);
-
-    char num1[] = "999999999999999999999999999999";
-    UBigIntToOtherPrint(num1, 2);
+    // char num[] = "999999999999999999999999999999";
+    // bigUIntToBinPrint(num);
+    // char num1[] = "999999999999999999999999999999";
+    // bigUIntToOtherPrint(num1, 2);
+    char num[]="1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+    decimalAndBin(num);
 
 
     end = getTime();
