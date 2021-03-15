@@ -2039,6 +2039,7 @@ void UBigIntToOtherPrint(char *num, int base) {
     printf("\n");
 }
 
+
 /*
  * 例题 6.3、【题目】
  *
