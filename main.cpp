@@ -1988,7 +1988,7 @@ void UBigIntToBinPrint(char *num) {
 
 
 /**
- * 无符号大整数除base并返回余数
+ * 无符号大整数除base并返回余数（大整数除法）
  * @param num 原数值将被修改为除base后的数值
  * @return 余数
  */
