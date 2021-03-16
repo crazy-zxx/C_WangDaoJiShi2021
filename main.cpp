@@ -1966,7 +1966,6 @@ int bigUIntDivideModTwo(char *num) {
 
     return m;
 }
-
 /*
  * 例题 6.2、【题目】进制转换
  * 将一个长度最多为30位数字的十进制非负整数转换为二进制数输出。
@@ -1987,64 +1986,11 @@ void bigUIntToBinPrint(char *num) {
 }
 
 
-/**
- * 无符号大整数除base并返回余数（大整数除法）
- * @param num 原数值将被修改为除base后的数值
- * @return 余数
- */
-char bigUIntDivideModOther(char *num, int base) {
-    if (base >= 26) {
-        printf("Can't deal!\n");
-        exit(EXIT_FAILURE);
-    }
-
-    int len = strlen(num);
-    int m = 0;              //余数
-    int sum = 0;            //模拟手算：被除数当前除2的部分
-    int j = 0;              //每位商的下标
-
-    for (int i = 0; i < len; ++i) {
-        sum = m * 10 + (num[i] > '9' ? num[i] - 'a' + 10 : num[i] - '0');    //累计被除数当前计算部分
-
-        num[j++] = sum / base + '0';
-        m = sum % base;
-        if (num[0] == '0') {
-            j = 0;
-        }
-
-    }
-    num[j] = '\0';
-
-    return m > 9 ? m - 10 + 'a' : m + '0';
-}
-
-/*
- * 扩展：将一个大的十进制非负整数转换为其他进制数输出。
- */
-void bigUIntToOtherPrint(char *num, int base) {
-
-    //十进制位数：n
-    //其他base进制位数至少：m= 「(int)(log2(pow(10,n)-1)/log2(base)) 向上取整
-    int len = strlen(num);
-    char res[(int) (log2(pow(10, len) - 1) / log2(base)) + 2];
-    int i = 0;
-
-    while (num[0]) {
-        res[i++] = bigUIntDivideModOther(num, base);
-    }
-
-    for (int j = i - 1; j >= 0; --j) {
-        printf("%c", res[j]);
-    }
-    printf("\n");
-}
-
-
 void bigUIntAdd(char res2[],int i){
     //TODO
 }
 /*
- * 例题 6.3、【题目】十进制与二进制
+ * 例题 6.3、【题目】十进制与二进制（大整数）
  * 对于一个1000位以内的十进制正整数A,将A转换为二进制数，然后按位逆序排列，再转换为十进制数B, B即为A的二进制逆序数。
  * 例如，对于十进制数173,其二进制形式为10101101，逆序排列得到10110101,其十进制数为181, 181即为173的二进制逆序数。
  */
@@ -2070,9 +2016,10 @@ void decimalAndBin(char *num) {
 }
 
 /*
- * 例题 6.4、【题目】
- *
+ * 例题 6.4、【题目】进制转换2
+ * 将M进制的数X转换为N进制的数输出。
  */
+
 
 /*
  * 例题 6.5、【题目】
