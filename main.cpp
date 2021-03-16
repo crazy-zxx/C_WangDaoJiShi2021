@@ -2024,15 +2024,15 @@ void decimalAndBin(char *num) {
  */
 void baseMtoN(int m, char *x, int n) {
 
-    int j = 0;
-    char res[102];
-
     int len = strlen(x);
     for (int i = 0; i < len; ++i) {
         if (isupper(x[i])) {
             x[i] = tolower(x[i]);
         }
     }
+
+    int j = 0;
+    char res[(int) (log2(pow(m, len) - 1) / log2(n) + 2)];
 
     while (x[0]) {
 
