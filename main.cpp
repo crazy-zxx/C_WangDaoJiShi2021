@@ -1966,6 +1966,7 @@ int bigUIntDivideModTwo(char *num) {
 
     return m;
 }
+
 /*
  * 例题 6.2、【题目】进制转换
  * 将一个长度最多为30位数字的十进制非负整数转换为二进制数输出。
@@ -1986,9 +1987,10 @@ void bigUIntToBinPrint(char *num) {
 }
 
 
-void bigUIntAdd(char res2[],int i){
+void bigUIntAdd(char res2[], int i) {
     //TODO
 }
+
 /*
  * 例题 6.3、【题目】十进制与二进制（大整数）
  * 对于一个1000位以内的十进制正整数A,将A转换为二进制数，然后按位逆序排列，再转换为十进制数B, B即为A的二进制逆序数。
@@ -2008,8 +2010,9 @@ void decimalAndBin(char *num) {
 
     char res2[(int) log10(pow(2, len) - 1) + 2];
 
-    for (int j = i-1; j >=0 ;--j) {
-        bigUIntAdd(res2,res1[j]);
+    //TODO
+    for (int j = i - 1; j >= 0; --j) {
+        bigUIntAdd(res2, res1[j]);
     }
 
     puts(res2);
@@ -2019,6 +2022,43 @@ void decimalAndBin(char *num) {
  * 例题 6.4、【题目】进制转换2
  * 将M进制的数X转换为N进制的数输出。
  */
+void baseMtoN(int m, char *x, int n) {
+
+    int j = 0;
+    char res[102];
+
+    int len = strlen(x);
+    for (int i = 0; i < len; ++i) {
+        if (isupper(x[i])) {
+            x[i] = tolower(x[i]);
+        }
+    }
+
+    while (x[0]) {
+
+        int len = strlen(x);
+        int k = 0;
+        int sum = 0, mo = 0;
+        for (int i = 0; i < len; ++i) {
+
+            // m ==> 10 ==> n
+            sum = mo * m + (x[i] > '9' ? x[i] - 'a' + 10 : x[i] - '0'); //被除数当前除n的部分
+            x[k++] = (char) (sum / n > 9 ? sum / n + 'a' - 10 : sum / n + '0');  //产生一位商
+            mo = sum % n;               //更新余数
+            if (x[0] == '0') {    //数值最开始产生无用的商0，需要抹掉
+                k = 0;
+            }
+
+        }
+        x[k] = '\0';
+        res[j++] = (char) (mo > 9 ? mo + 'a' - 10 : mo + '0');
+    }
+
+    for (int i = j - 1; i >= 0; --i) {
+        printf("%c", res[i]);
+    }
+    printf("\n");
+}
 
 
 /*
@@ -2152,8 +2192,10 @@ int main() {
     // bigUIntToBinPrint(num);
     // char num1[] = "999999999999999999999999999999";
     // bigUIntToOtherPrint(num1, 2);
-    char num[]="1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-    decimalAndBin(num);
+    // char num[] = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+    // decimalAndBin(num);
+    char num[] = "XYZZA765";
+    baseMtoN(36, num, 9);
 
 
     end = getTime();
