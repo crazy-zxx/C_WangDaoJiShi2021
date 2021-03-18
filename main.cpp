@@ -357,6 +357,9 @@ void calcDateOfYear(int year, int n) {
             }
         }
     }
+    if (sum < n) {  //跨年
+        calcDateOfYear(year+1,n-sum);
+    }
 }
 
 /*
@@ -500,7 +503,7 @@ void calcDayOfWeek(int year, const char *month, int day) {
     }
 
     int c = year / 100, y = year % 100; //上个世纪，本年后两位
-    int w = (y + y / 4 + c / 4 - 2 * c + (26 * (m + 1) / 10) + day - 1) % 7;    //蔡勒公式
+    int w = (y + y / 4 + c / 4 - 2 * c + (13 * (m + 1) / 5) + day - 1) % 7;    //蔡勒公式
     printf("%s\n", week[w]);
 }
 
@@ -2075,9 +2078,9 @@ void addAB(int a, int b, int m) {
     unsigned int sum = a + b;
 
     int res[101] = {0};
-    int i = sum?0:1;
+    int i = sum ? 0 : 1;
     while (sum) {
-        res[i++] = sum % m ;
+        res[i++] = sum % m;
         sum /= m;
     }
 
