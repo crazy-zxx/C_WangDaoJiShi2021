@@ -358,7 +358,7 @@ void calcDateOfYear(int year, int n) {
         }
     }
     if (sum < n) {  //跨年
-        calcDateOfYear(year+1,n-sum);
+        calcDateOfYear(year + 1, n - sum);
     }
 }
 
@@ -471,10 +471,11 @@ void calcDateGap(int date1, int date2) {
 /*
  * 习题 2.7、【题目】Day of Week
  * 编写一个程序，计算给定的日期是周几。
- * 提示：蔡勒公式！！！
+ * 提示：基姆拉尔森公式（推荐）：
+ * w= ( d + 2*m + [3*(m+1)/5] + y + [y/4] - [y/100] + [y/400] + 1 ) mod 7
  */
 /**
- * 计算给定的日期是周几(蔡勒公式)
+ * 计算给定的日期是周几(基姆拉尔森公式)
  * @param year 年
  * @param month 月
  * @param day 日
@@ -502,8 +503,7 @@ void calcDayOfWeek(int year, const char *month, int day) {
         year--;
     }
 
-    int c = year / 100, y = year % 100; //上个世纪，本年后两位
-    int w = (y + y / 4 + c / 4 - 2 * c + (13 * (m + 1) / 5) + day - 1) % 7;    //蔡勒公式
+    int w = (day + 2 * m + 3 * (m + 1) / 5 + year + year / 4 - year / 100 + year / 400 + 1) % 7;
     printf("%s\n", week[w]);
 }
 
