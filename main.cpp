@@ -2404,8 +2404,24 @@ int main() {
     // decimalAndBin(num);
     // char num[] = "XYZZA765";
     // baseMtoN(36, num, 9);
-    addAB(1300, 48, 8);
+    // addAB(1300, 48, 8);
 
+
+
+    // Matrix a = inputMatrix();
+    // Matrix b = inputMatrix();
+    // Matrix add = addMatrix(a, b);
+    // Matrix sub = subMatrix(a, b);
+    // Matrix mul = multiplyMatrix(a, b);
+    // Matrix trans = transposMatrix(a);
+    // Matrix bp = binaryPowMatrix(a, 2);
+    // outputMatrix(a);
+    // outputMatrix(b);
+    // outputMatrix(add);
+    // outputMatrix(sub);
+    // outputMatrix(mul);
+    // outputMatrix(trans);
+    // outputMatrix(bp);
 
     end = getTime();
     printf("\n\ntime spend:%f ms", (end - start));
