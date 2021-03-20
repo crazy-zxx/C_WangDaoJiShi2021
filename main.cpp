@@ -2108,6 +2108,178 @@ void addAB(int a, int b, int m) {
  */
 
 
+//******************************* 矩阵运算 *********************************
+
+//矩阵
+typedef struct matrix {
+    double *data;
+    int m;
+    int n;
+} Matrix;
+
+/**
+ * 创建矩阵
+ */
+Matrix createMatrix(int m, int n) {
+    //动态分配数组来模拟矩阵，按行优先
+    Matrix matrix;
+    matrix.data = (double *) malloc(sizeof(double) * m * n);
+    memset(matrix.data, 0, sizeof(double) * m * n);
+    matrix.m = m;
+    matrix.n = n;
+
+    return matrix;
+}
+
+/**
+ * 矩阵输入
+ */
+Matrix inputMatrix() {
+    int m, n;
+    printf("Input rows and columns (m,n):");
+    scanf("%d,%d", &m, &n);
+    Matrix matrix;
+    if (m > 0 && n > 0) {
+        //创建矩阵
+        matrix = createMatrix(m, n);
+        //输入第一个矩阵值
+        printf("Input first matrix %d numbers:\n", m * n);
+        for (int i = 0; i < m * n; ++i) {
+            scanf("%lf", &matrix.data[i]);
+        }
+    }
+    return matrix;
+}
+
+/**
+ * 矩阵输出
+ */
+void outputMatrix(Matrix matrix) {
+    if (matrix.m > 0 && matrix.n > 0) {
+        for (int i = 0; i < matrix.m; ++i) {
+            for (int j = 0; j < matrix.n; ++j) {
+                printf("%g", matrix.data[i * matrix.n + j]);
+                if (j < matrix.n - 1) {
+                    printf("\t");
+                } else {
+                    printf("\n");
+                }
+            }
+        }
+        printf("\n");
+    } else {
+        printf("Empty!\n");
+    }
+}
+
+/**
+ * 矩阵加法
+ */
+Matrix addMatrix(Matrix a, Matrix b) {
+
+    Matrix matrix;
+    if (a.m == b.m && a.n == b.n) {
+        //创建矩阵
+        matrix = createMatrix(a.m, a.n);
+        for (int i = 0; i < matrix.m * matrix.n; ++i) {
+            matrix.data[i] = a.data[i] + b.data[i];
+        }
+    }
+    return matrix;
+}
+
+/**
+ * 矩阵减法
+ */
+Matrix subMatrix(Matrix a, Matrix b) {
+
+    Matrix matrix;
+    if (a.m == b.m && a.n == b.n) {
+        //创建矩阵
+        matrix = createMatrix(a.m, a.n);
+        for (int i = 0; i < matrix.m * matrix.n; ++i) {
+            matrix.data[i] = a.data[i] - b.data[i];
+        }
+    }
+    return matrix;
+}
+
+/**
+ * 矩阵乘法
+ */
+Matrix multiplyMatrix(Matrix a, Matrix b) {
+
+    Matrix matrix;
+    if (a.n == b.m) {
+        //创建矩阵
+        matrix = createMatrix(a.m, b.n);
+        //按照矩阵形式乘
+        for (int i = 0; i < matrix.m; ++i) {
+            for (int j = 0; j < matrix.n; ++j) {
+                //matrix[i][j]== ∑ (a[i][k]*b[k][j]),k:0->a.n
+                for (int k = 0; k < a.n; ++k) {
+                    matrix.data[i * matrix.n + j] += a.data[i * a.n + k] * b.data[k * b.n + j];
+                }
+            }
+        }
+    }
+    return matrix;
+}
+
+/**
+ * 矩阵转置
+ */
+Matrix transposMatrix(Matrix a) {
+    Matrix matrix;
+    if (a.n > 0) {
+        //创建矩阵
+        matrix = createMatrix(a.n, a.m);
+        //复制并转置到新数组
+        for (int i = 0; i < matrix.m; ++i) {
+            for (int j = 0; j < matrix.n; ++j) {
+                //matrix[i][j]== a[j][i]
+                matrix.data[i * matrix.n + j] = a.data[j * a.n + i];;
+            }
+        }
+    }
+    return matrix;
+}
+
+/**
+ * 矩阵快速幂
+ */
+Matrix binaryPowMatrix(Matrix a, int k) {
+
+    Matrix matrix;
+    if (k >= 0) {
+        //创建矩阵
+        matrix = createMatrix(a.m, a.n);
+
+        //初始化为单位矩阵
+        for (int i = 0; i < matrix.m; ++i) {
+            for (int j = 0; j < matrix.n; ++j) {
+                if (i == j) {
+                    matrix.data[i * matrix.n + j] = 1;
+                } else {
+                    matrix.data[i * matrix.n + j] = 0;
+                }
+            }
+        }
+
+        //二分幂思想（循环）
+        while (k > 0) {
+            if (k & 1) { //k末位为1
+                matrix = multiplyMatrix(matrix, a); //累积对应权值
+            }
+            a = multiplyMatrix(a, a);   //平方，更新权值
+            k >>= 1;                    //右移一位
+        }
+    }
+
+    return matrix;
+}
+
+
 
 int main() {
 
