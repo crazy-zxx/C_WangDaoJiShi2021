@@ -2281,6 +2281,526 @@ Matrix binaryPowMatrix(Matrix a, int k) {
 
 
 
+//******************************* 大整数运算 *********************************
+
+//大整数
+typedef struct bigInteger {
+    int *data;  //数值，0下标对应个位
+    int type;   //正负，0正，1负
+    int len;    //数值位数
+} BigInt;
+
+/**
+ * 检查字符串是否合法（负数有-号前缀，正数无符号前缀，除符号位每位都是数字,数值和符号之间无空格）
+ * @param x
+ * @return
+ */
+int checkStr(const char *x) {
+    int len;
+    if (x && (len = strlen(x)) > 0) {    //非NULL,非空
+
+        for (int i = 0; i < len; ++i) {
+            if (isdigit(x[i]) || (i == 0 && x[0] == '-')) {
+                continue;
+            } else {
+                return 0;
+            }
+        }
+        if (len > 1 || (len == 1 && x[0] != '-')) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+BigInt getBigIntFromStr(const char *x) {
+
+    BigInt bigInt;
+    bigInt.data = NULL;
+    bigInt.len = 0;
+    bigInt.type = 0;
+
+    if (checkStr(x) == 1) {
+        int len = strlen(x);
+        if (x[0] == '-') {
+            bigInt.type = 1;
+            bigInt.len = len - 1;
+        } else {
+            bigInt.type = 0;
+            bigInt.len = len;
+        }
+
+        bigInt.data = (int *) malloc(sizeof(int) * bigInt.len);
+
+        //字符转数字并翻转，使得0下标对应个位
+        for (int i = bigInt.type; i < len; ++i) {
+            bigInt.data[len - 1 - i] = x[i] - '0';
+        }
+    } else {
+        printf("Invalid value!\n");
+    }
+
+    return bigInt;
+}
+
+BigInt getBigIntFromInt(int x) {
+    BigInt bigInt;
+    bigInt.type = x >= 0 ? 0 : 1;
+
+    int temp[32] = {0};
+    int len = 0;
+    long long xx = abs(x);
+    do {
+        len++;
+        temp[len - 1] = xx % 10;
+        xx /= 10;
+    } while (xx);
+
+    bigInt.len = len;
+    bigInt.data = (int *) malloc(sizeof(int) * len);
+    memmove(bigInt.data, temp, sizeof(int) * len);
+
+    //printf("getBigIntFromInt: %p\n", bigInt.data);
+
+    return bigInt;
+}
+
+BigInt copyBigInt(BigInt a) {
+    BigInt bigInt;
+    bigInt.len = a.len;
+    bigInt.type = a.type;
+    bigInt.data = (int *) malloc(sizeof(int) * bigInt.len);
+    memmove(bigInt.data, a.data, sizeof(int) * bigInt.len);
+
+    return bigInt;
+}
+
+void outputBigInt(BigInt bigInt) {
+    if (bigInt.len > 0) {
+        if (bigInt.type) {
+            printf("-");
+        }
+        for (int i = bigInt.len - 1; i >= 0; --i) {
+            printf("%d", bigInt.data[i]);
+        }
+    } else {
+        printf("Empty!");
+    }
+    printf("\n");
+}
+
+void destroyBigInt(BigInt bigInt) {
+
+    //printf("destroyBigInt: %p\n", bigInt.data);
+    free(bigInt.data);
+}
+
+/**
+ *
+ * @param a
+ * @param b
+ * @return 1:a>b,0:a==b,-1:a<b
+ */
+int compareBigIntAbs(BigInt a, BigInt b) {
+    if (a.len == b.len) {
+        for (int i = a.len - 1; i >= 0; --i) {
+            if (a.data[i] > b.data[i]) {
+                return 1;
+            } else if (a.data[i] < b.data[i]) {
+                return -1;
+            }
+        }
+    } else {
+        return a.len > b.len ? 1 : -1;
+    }
+    return 0;
+}
+
+/**
+ * 绝对值加法
+ * @param a
+ * @param b
+ * @param c
+ */
+void addAbs(BigInt a, BigInt b, BigInt *c) {
+
+    int res[a.len > b.len ? a.len + 1 : b.len + 1];
+    int carry = 0;  //进位
+    int temp = 0;   //临时保存某位加和
+    int i = 0;      //计数结果位数
+    //从个位开始一位一位向高位加，注意进位
+    while (i < a.len && i < b.len) { //公共部分相加
+        temp = a.data[i] + b.data[i] + carry;
+        res[i++] = temp % 10;
+        carry = temp / 10;
+    }
+
+    while (i < a.len) {             //a有剩余部分
+        temp = a.data[i] + carry;
+        res[i++] = temp % 10;
+        carry = temp / 10;
+    }
+
+    while (i < b.len) {             //b有剩余部分
+        temp = b.data[i] + carry;
+        res[i++] = temp % 10;
+        carry = temp / 10;
+    }
+
+    //最后有进位
+    if (carry) {
+        res[i++] = carry;
+    }
+
+    c->len = i; //修正结果位数
+    c->data = (int *)malloc(sizeof(int) * c->len);
+    memmove(c->data, res, sizeof(int) * c->len);
+}
+
+/**
+ * 绝对值减法（大数减小数）
+ * @param a 大数
+ * @param b 小数
+ * @param c
+ */
+void subAbs(BigInt a, BigInt b, BigInt *c) {
+
+    int res[a.len > b.len ? a.len + 1 : b.len + 1];
+    int temp = 0;
+    int i = 0;
+    while (i < b.len) {         //公共部分相减
+        if (a.data[i] < b.data[i] && i + 1 < a.len) {  //借位处理
+            a.data[i + 1]--;
+            temp = a.data[i] + 10;
+        } else {
+            temp = a.data[i];
+        }
+        res[i] = temp - b.data[i];
+        i++;
+    }
+
+    while (i < a.len) {             //a有剩余部分
+        if (a.data[i] < 0 && i + 1 < a.len) {   //借位处理
+            a.data[i + 1]--;
+            temp = a.data[i] + 10;
+        } else {
+            temp = a.data[i];
+        }
+        res[i++] = temp;
+    }
+
+    //去除结果的前导无效0
+    for (int j = i - 1; j >= 0; --j) {
+        if (res[j] == 0) {
+            i--;
+        } else {
+            break;
+        }
+    }
+
+    c->len = i; //修正结果位数
+    c->data = (int *)malloc(sizeof(int) * c->len);
+    memmove(c->data, res, sizeof(int) * c->len);
+}
+
+/**
+ * 加法：同号相加，直接加；异号相加：取大值符号，绝对值大减小
+ * @param a
+ * @param b
+ * @return
+ */
+BigInt addBigInt(const BigInt a, const BigInt b) {
+
+    BigInt c;
+    c.data = NULL;
+    c.len = 0;
+    c.type = 0;
+
+    if (a.len > 0 && b.len > 0) {
+        //比俩数中最长的多分配一位，以备有进位，进位最多一位
+        c.len = a.len > b.len ? a.len + 1 : b.len + 1;
+        c.data = (int *)malloc(sizeof(int) * c.len);
+
+        //危险！！！结构体内有数组，简单的结构体传值会共用数组，一旦修改数组就牵一发而动全身
+        //所以传参数使用复制值，不用原值
+        BigInt t1 = copyBigInt(a), t2 = copyBigInt(b);
+
+        if (a.type == b.type) { //同号
+            c.type = a.type;    //取公共符号
+            addAbs(t1, t2, &c);   //直接加
+        } else {        //异号
+            //取绝对值值大者符号，并且用大数减小数
+            int res = compareBigIntAbs(a, b);
+            if (res == 0) { //同值加为0
+                c.type = 0;
+                c.data[0] = 0;
+                c.len = 1;
+            } else if (res > 0) {
+                c.type = a.type;    //取绝对值值大者符号
+                //subAbs会修改传入参数，所以需要复制一个新的结构体传入
+                subAbs(t1, t2, &c);   //大数减小数
+            } else {
+                c.type = b.type;    //取绝对值值大者符号
+                //subAbs会修改传入参数，所以需要复制一个新的结构体传入
+                subAbs(t2, t1, &c);  //大数减小数
+            }
+        }
+
+        destroyBigInt(t1);
+        destroyBigInt(t2);
+    }
+
+    return c;
+}
+
+/**
+ * 减法：同号相减，绝对值大减小；异号相减，取前值符号，绝对值相加
+ * @param a
+ * @param b
+ * @return
+ */
+BigInt subBigInt(BigInt a, BigInt b) {
+    BigInt c;
+    c.data = NULL;
+    c.len = 0;
+    c.type = 0;
+
+    if (a.len > 0 && b.len > 0) {
+        //比俩数中最长的多分配一位，以备有进位，进位最多一位
+        c.len = a.len > b.len ? a.len + 1 : b.len + 1;
+        c.data = (int *)malloc(sizeof(int) * c.len);
+
+        //危险！！！结构体内有数组，简单的结构体传值会共用数组，一旦修改数组就牵一发而动全身
+        //所以传参数使用复制值，不用原值
+        BigInt t1 = copyBigInt(a), t2 = copyBigInt(b);
+
+        if (a.type == b.type) { //同号
+            int res = compareBigIntAbs(a, b);
+            if (res == 0) {     //同值减为0
+                c.type = 0;
+                c.data[0] = 0;
+                c.len = 1;
+            } else if (res > 0) { //前大后小，够减
+                c.type = a.type;    //取公共符号
+                //subAbs会修改传入参数，所以需要复制一个新的结构体传入
+                subAbs(t1, t2, &c); //绝对值大减小
+            } else {             //前小后大，不够减会变号
+                c.type = !a.type;   //取公共符号变号
+                //subAbs会修改传入参数，所以需要复制一个新的结构体传入
+                subAbs(t2, t1, &c); //绝对值大减小
+            }
+        } else {            //异号
+            c.type = a.type;//取前数值符号
+            addAbs(t1, t2, &c); //并且绝对值相加
+        }
+
+        destroyBigInt(t1);
+        destroyBigInt(t2);
+    }
+
+    return c;
+}
+
+int getNumberOfDigits(int x) {
+    int n = 0;
+
+    do {
+        n++;
+        x /= 10;
+    } while (x);
+
+    return n;
+}
+
+BigInt multiplyBigIntAndInt(BigInt a, int b) {
+    BigInt c;
+    c.data = NULL;
+    c.len = 0;
+    c.type = 0;
+
+    if (a.len > 0) {
+        int bType = b >= 0 ? 0 : 1;
+        c.type = a.type != bType;
+
+        //俩数相乘结果位数不超过俩数的位数和
+        //临时存放不确定位数的结果
+        int res[a.len + getNumberOfDigits(b)];
+        long long temp = 0;
+        int carry = 0;
+        int i = 0;
+        long long bb = abs(b);
+        while (i < a.len) {
+            temp = a.data[i] * bb + carry;
+            res[i++] = temp % 10;
+            carry = temp / 10;
+        }
+
+        while (carry) {
+            res[i++] = carry % 10;
+            carry /= 10;
+        }
+
+        c.len = i;
+        c.data = (int *)malloc(sizeof(int) * c.len);
+        memmove(c.data, res, sizeof(int) * c.len);
+    }
+
+    return c;
+}
+
+
+BigInt multiplyBigInt(BigInt a, BigInt b) {
+    BigInt c;
+    c.data = NULL;
+    c.len = 0;
+    c.type = 0;
+
+    if (a.len > 0 && b.len > 0) {
+        c.type = a.type != b.type;
+
+        //俩数相乘结果位数不超过俩数的位数和
+        //临时存放不确定位数的结果
+        int res[a.len + b.len];
+        memset(res, 0, sizeof(int) * (a.len + b.len));
+        long long temp1 = 0, temp2 = 0;
+        int carry1 = 0, carry2 = 0;
+        int i = 0;  //模拟手算，每次和偏移+1对齐求和
+
+        for (int j = 0; j < a.len; ++j) {
+            int k;
+            for (k = 0; k < b.len; ++k) {
+                temp1 = a.data[j] * b.data[k] + carry1;     //计算乘积
+                temp2 = res[k + i] + temp1 % 10 + carry2;   //计算该位累加
+                res[k + i] = temp2 % 10;                    //该位当前结果
+                carry2 = temp2 / 10;        //累加导致的进位
+                carry1 = temp1 / 10;        //乘积导致的进位
+            }
+            if (carry1 || carry2) {
+                temp2 = carry1 + carry2;
+                res[k++ + i] = temp2 % 10;
+                carry1 = 0;
+                carry2 = temp2 / 10;
+            }
+            i++;
+        }
+
+        //寻找最高非0位，确定位数
+        for (int j = a.len + b.len - 1; j >= 0; --j) {
+            if (res[j]) {
+                i = j + 1;
+                break;
+            }
+        }
+        c.len = i;
+        c.data = (int *)malloc(sizeof(int) * c.len);
+        memmove(c.data, res, sizeof(int) * c.len);
+    }
+
+    return c;
+}
+
+
+BigInt divideBigIntAndInt(BigInt a, int b) {
+    BigInt c;
+    c.data = NULL;
+    c.len = 0;
+    c.type = 0;
+
+
+    return c;
+}
+
+BigInt divideBigInt(BigInt a, BigInt b) {
+    BigInt c;
+    c.data = NULL;
+    c.len = 0;
+    c.type = 0;
+
+    if (a.len > 0 && b.len > 0) {
+
+    }
+
+    return c;
+}
+
+
+int value(BigInt bigInt) {
+    int sum = 0;
+    for (int i = bigInt.len - 1; i >= 0; --i) {
+        sum = sum * 10 + bigInt.data[i];
+    }
+    return sum * (bigInt.type ? -1 : 1);
+}
+
+void check() {
+    srand(time(NULL));
+
+    for (int i = 0; i < 1000; ++i) {
+        int x = rand() % 1000 - 500;
+        int y = rand() % 1000 - 500;
+        BigInt a = getBigIntFromInt(x);
+        BigInt b = getBigIntFromInt(y);
+        BigInt add = addBigInt(a, b);
+        BigInt sub = subBigInt(a, b);
+        BigInt mul = multiplyBigIntAndInt(a, y);
+        BigInt mul2 = multiplyBigInt(a, b);
+
+        if (x != value(a) || y != value(b) ||
+            x + y != value(add) || x - y != value(sub) ||
+            x * y != value(mul) || x * y != value(mul2)) {
+
+            printf("%d", x);
+            outputBigInt(a);
+            printf("%d", y);
+            outputBigInt(b);
+            printf("%d+%d=%d\n", x, y, x + y);
+            outputBigInt(add);
+            printf("%d\n", value(add));
+            printf("%d-%d=%d\n", x, y, x - y);
+            outputBigInt(sub);
+            printf("%d\n", value(sub));
+            printf("%d*%d=%d\n", x, y, x * y);
+            outputBigInt(mul);
+            printf("%d\n", value(mul));
+            printf("%d*%d=%d\n", x, y, x * y);
+            outputBigInt(mul2);
+            printf("%d\n", value(mul2));
+
+            printf("\n");
+        }
+
+        destroyBigInt(a);
+        destroyBigInt(b);
+        destroyBigInt(add);
+        destroyBigInt(sub);
+        destroyBigInt(mul);
+
+    }
+
+    outputBigInt(getBigIntFromInt(-101230980));
+    outputBigInt(getBigIntFromInt(+101230980));
+
+    outputBigInt(getBigIntFromStr(NULL));
+    outputBigInt(getBigIntFromStr(""));
+    outputBigInt(getBigIntFromStr(" "));
+    outputBigInt(getBigIntFromStr("-"));
+    outputBigInt(getBigIntFromStr("+123"));
+    outputBigInt(getBigIntFromStr("- "));
+    outputBigInt(getBigIntFromStr("-123-526"));
+    outputBigInt(getBigIntFromStr("12345-"));
+    outputBigInt(getBigIntFromStr("- 12045060124054502310"));
+
+    outputBigInt(subBigInt(
+            getBigIntFromStr(
+                    "9999999999999999999999990000000001111111122222222333333334444444455555555566666666677777777778888888888"),
+            getBigIntFromStr("111111110000000022222222229999999977777777778888888886666666663333444444444555555555")
+    ));
+
+}
+
+
+
 int main() {
 
     double start, end;
@@ -2422,6 +2942,10 @@ int main() {
     // outputMatrix(mul);
     // outputMatrix(trans);
     // outputMatrix(bp);
+
+
+    check();
+
 
     end = getTime();
     printf("\n\ntime spend:%f ms", (end - start));
