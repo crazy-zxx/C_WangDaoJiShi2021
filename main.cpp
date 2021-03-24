@@ -2282,7 +2282,6 @@ Matrix binaryPowMatrix(Matrix a, int k) {
 
 
 //******************************* 大整数运算 *********************************
-
 //大整数
 typedef struct bigInteger {
     int *data;  //数值，0下标对应个位
@@ -2707,6 +2706,40 @@ BigInt divideBigIntAndInt(BigInt a, int b) {
     c.len = 0;
     c.type = 0;
 
+    if (a.len > 0 && b != 0) {
+        int bType = b >= 0 ? 0 : 1;
+        c.type = a.type != bType;
+
+        int res[a.len];
+        memset(res, 0, sizeof(int) * a.len);
+        int m = 0;
+        int i = a.len - 1;
+        b = abs(b);
+        while (i >= 0) {    //模拟手算除法
+            m = m * 10 + a.data[i];
+            if (m < b) {    //不够除，商0，余数不变
+                res[i--] = 0;
+            } else {        //够除，商由除法决定，余数更新
+                res[i--] = m / b;
+                m %= b;
+            }
+        }
+
+        i = 1;  //保证至少一位0
+        for (int j = a.len - 1; j >= 0; --j) {  //确定最高非0位，从而确定数值位数
+            if (res[j] != 0) {
+                i = j + 1;
+                break;
+            }
+        }
+
+        if (i == 1 && res[0] == 0) {
+            c.type = 0;
+        }
+        c.len = i;
+        c.data = (int *)malloc(sizeof(int) * c.len);
+        memmove(c.data, res, sizeof(int) * c.len);
+    }
 
     return c;
 }
@@ -2739,16 +2772,21 @@ void check() {
     for (int i = 0; i < 1000; ++i) {
         int x = rand() % 1000 - 500;
         int y = rand() % 1000 - 500;
+        while (!y) {
+            y = rand() % 1000 - 500;
+        }
         BigInt a = getBigIntFromInt(x);
         BigInt b = getBigIntFromInt(y);
         BigInt add = addBigInt(a, b);
         BigInt sub = subBigInt(a, b);
         BigInt mul = multiplyBigIntAndInt(a, y);
         BigInt mul2 = multiplyBigInt(a, b);
+        BigInt div = divideBigIntAndInt(a, y);
 
         if (x != value(a) || y != value(b) ||
             x + y != value(add) || x - y != value(sub) ||
-            x * y != value(mul) || x * y != value(mul2)) {
+            x * y != value(mul) || x * y != value(mul2) ||
+            x / y != value(div)) {
 
             printf("%d", x);
             outputBigInt(a);
@@ -2766,6 +2804,9 @@ void check() {
             printf("%d*%d=%d\n", x, y, x * y);
             outputBigInt(mul2);
             printf("%d\n", value(mul2));
+            printf("%d/%d=%d\n", x, y, x / y);
+            outputBigInt(div);
+            printf("%d\n", value(div));
 
             printf("\n");
         }
