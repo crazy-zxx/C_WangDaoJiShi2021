@@ -2280,7 +2280,6 @@ Matrix binaryPowMatrix(Matrix a, int k) {
 }
 
 
-
 //******************************* 大整数运算 *********************************
 //大整数
 typedef struct bigInteger {
@@ -2453,7 +2452,7 @@ void addAbs(BigInt a, BigInt b, BigInt *c) {
     }
 
     c->len = i; //修正结果位数
-    c->data = (int *)malloc(sizeof(int) * c->len);
+    c->data = (int *) malloc(sizeof(int) * c->len);
     memmove(c->data, res, sizeof(int) * c->len);
 }
 
@@ -2499,7 +2498,7 @@ void subAbs(BigInt a, BigInt b, BigInt *c) {
     }
 
     c->len = i; //修正结果位数
-    c->data = (int *)malloc(sizeof(int) * c->len);
+    c->data = (int *) malloc(sizeof(int) * c->len);
     memmove(c->data, res, sizeof(int) * c->len);
 }
 
@@ -2519,7 +2518,7 @@ BigInt addBigInt(const BigInt a, const BigInt b) {
     if (a.len > 0 && b.len > 0) {
         //比俩数中最长的多分配一位，以备有进位，进位最多一位
         c.len = a.len > b.len ? a.len + 1 : b.len + 1;
-        c.data = (int *)malloc(sizeof(int) * c.len);
+        c.data = (int *) malloc(sizeof(int) * c.len);
 
         //危险！！！结构体内有数组，简单的结构体传值会共用数组，一旦修改数组就牵一发而动全身
         //所以传参数使用复制值，不用原值
@@ -2568,7 +2567,7 @@ BigInt subBigInt(BigInt a, BigInt b) {
     if (a.len > 0 && b.len > 0) {
         //比俩数中最长的多分配一位，以备有进位，进位最多一位
         c.len = a.len > b.len ? a.len + 1 : b.len + 1;
-        c.data = (int *)malloc(sizeof(int) * c.len);
+        c.data = (int *) malloc(sizeof(int) * c.len);
 
         //危险！！！结构体内有数组，简单的结构体传值会共用数组，一旦修改数组就牵一发而动全身
         //所以传参数使用复制值，不用原值
@@ -2641,7 +2640,7 @@ BigInt multiplyBigIntAndInt(BigInt a, int b) {
         }
 
         c.len = i;
-        c.data = (int *)malloc(sizeof(int) * c.len);
+        c.data = (int *) malloc(sizeof(int) * c.len);
         memmove(c.data, res, sizeof(int) * c.len);
     }
 
@@ -2677,7 +2676,7 @@ BigInt multiplyBigInt(BigInt a, BigInt b) {
             }
             if (carry1 || carry2) {
                 temp2 = carry1 + carry2;
-                res[k++ + i] = temp2 % 10;
+                res[k + i] = temp2 % 10;
                 carry1 = 0;
                 carry2 = temp2 / 10;
             }
@@ -2692,7 +2691,7 @@ BigInt multiplyBigInt(BigInt a, BigInt b) {
             }
         }
         c.len = i;
-        c.data = (int *)malloc(sizeof(int) * c.len);
+        c.data = (int *) malloc(sizeof(int) * c.len);
         memmove(c.data, res, sizeof(int) * c.len);
     }
 
@@ -2713,16 +2712,13 @@ BigInt divideBigIntAndInt(BigInt a, int b) {
         int res[a.len];
         memset(res, 0, sizeof(int) * a.len);
         int m = 0;
+        int temp = 0;
         int i = a.len - 1;
         b = abs(b);
         while (i >= 0) {    //模拟手算除法
-            m = m * 10 + a.data[i];
-            if (m < b) {    //不够除，商0，余数不变
-                res[i--] = 0;
-            } else {        //够除，商由除法决定，余数更新
-                res[i--] = m / b;
-                m %= b;
-            }
+            temp = m * 10 + a.data[i];
+            res[i--] = temp / b;
+            m = temp % b;
         }
 
         i = 1;  //保证至少一位0
@@ -2737,7 +2733,7 @@ BigInt divideBigIntAndInt(BigInt a, int b) {
             c.type = 0;
         }
         c.len = i;
-        c.data = (int *)malloc(sizeof(int) * c.len);
+        c.data = (int *) malloc(sizeof(int) * c.len);
         memmove(c.data, res, sizeof(int) * c.len);
     }
 
@@ -2816,6 +2812,8 @@ void check() {
         destroyBigInt(add);
         destroyBigInt(sub);
         destroyBigInt(mul);
+        destroyBigInt(mul2);
+        destroyBigInt(div);
 
     }
 
@@ -2839,7 +2837,6 @@ void check() {
     ));
 
 }
-
 
 
 int main() {
